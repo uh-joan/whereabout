@@ -108,5 +108,27 @@
       "artists": [],
       "genres": []
     }
+  },
+  {
+    "id": "12422157",
+    "listingDate": "2026-05-28",
+    "event": {
+      "id": "2422157",
+      "title": "KDN at Brilliant Corners",
+      "startTime": "2026-05-28T20:00:00.000",
+      "endTime": null,
+      "cost": "£8",
+      "contentUrl": "/events/uk/london/venue/brilliant-corners/kdn-2422157",
+      "lineup": "KDN (Kongo Dia Ntotila)",
+      "isTicketed": true,
+      "venue": {
+        "id": "10005",
+        "name": "Brilliant Corners",
+        "address": "470 Kingsland Road, Dalston, London E8 4AE",
+        "area": {"id": "13", "name": "London"}
+      },
+      "artists": [],
+      "genres": [{"id": "5", "name": "Jazz"}]
+    }
   }
 ]

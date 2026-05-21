@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta
 
 import pytest
 
-from whereabout.sources.resident_advisor import RASource, _extract_postcode, _parse_local_dt
+from whereabout.sources.resident_advisor import RASource, _extract_postcode, _parse_local_dt, _parse_lineup
 from whereabout.models import Query
 
 FIXTURE = Path(__file__).parent / "fixtures" / "ra_london_synthetic.json"
@@ -108,12 +108,47 @@ def test_parse_event_no_end_time(source, listings):
     assert raw.date_end_utc is None
 
 
+# ── lineup parsing ────────────────────────────────────────────────────────────
+
+def test_parse_lineup_xml_tags():
+    assert _parse_lineup('<artist id="1">Objekt</artist>') == ["Objekt"]
+
+
+def test_parse_lineup_xml_multiple():
+    result = _parse_lineup('<artist id="1">Objekt</artist>\n<artist id="2">Mor Elian</artist>')
+    assert result == ["Objekt", "Mor Elian"]
+
+
+def test_parse_lineup_plain_text_with_paren():
+    assert _parse_lineup("KDN (Kongo Dia Ntotila)") == ["KDN"]
+
+
+def test_parse_lineup_plain_text_multiple():
+    result = _parse_lineup("DJ A, DJ B & DJ C")
+    assert result == ["DJ A", "DJ B", "DJ C"]
+
+
+def test_parse_lineup_b2b():
+    assert _parse_lineup("Objekt b2b Mor Elian") == ["Objekt", "Mor Elian"]
+
+
+def test_parse_lineup_empty():
+    assert _parse_lineup("") == []
+
+
+def test_parse_lineup_used_when_artists_empty(source, listings):
+    """listings[5] has artists=[] and lineup='KDN (Kongo Dia Ntotila)'."""
+    raw = source._parse_listing(listings[5])
+    assert raw.artists == ["KDN"]
+    assert raw.venue_postcode == "E8 4AE"
+
+
 # ── full batch parse ──────────────────────────────────────────────────────────
 
 def test_parse_all_listings(source, listings):
     raws = [source._parse_listing(l) for l in listings]
-    assert len(raws) == 5
+    assert len(raws) == 6
     assert all(r.source == "resident_advisor" for r in raws)
-    # 4 of 5 have postcodes
+    # 5 of 6 have postcodes
     with_postcode = [r for r in raws if r.venue_postcode]
-    assert len(with_postcode) == 4
+    assert len(with_postcode) == 5

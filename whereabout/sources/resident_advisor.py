@@ -22,6 +22,9 @@ _LONDON_TZ = ZoneInfo("Europe/London")
 
 # Matches UK postcodes anywhere in an address string
 _POSTCODE_RE = re.compile(r"\b([A-Z]{1,2}[0-9][0-9A-Z]?\s*[0-9][A-Z]{2})\b")
+_LINEUP_TAG_RE = re.compile(r"<artist[^>]*>([^<]+)</artist>", re.IGNORECASE)
+_LINEUP_SPLIT_RE = re.compile(r"\s*(?:,\s*|&amp;|&|\sb2b\s|\s\+\s|\svs\.?\s|\s/\s)\s*", re.IGNORECASE)
+_PAREN_RE = re.compile(r"\s*\([^)]*\)")
 
 _GRAPHQL_URL = "https://ra.co/graphql"
 _BROWSER_HEADERS = {
@@ -63,6 +66,21 @@ query GET_EVENT_LISTINGS($filters: FilterInputDtoInput, $pageSize: Int, $page: I
   }
 }
 """
+
+
+def _parse_lineup(lineup: str) -> list[str]:
+    """Extract artist names from RA lineup field (XML tags or plain text)."""
+    tagged = _LINEUP_TAG_RE.findall(lineup)
+    if tagged:
+        return [n.strip() for n in tagged if n.strip()]
+    # Plain text: split on common separators, strip parentheticals
+    parts = _LINEUP_SPLIT_RE.split(lineup)
+    names = []
+    for part in parts:
+        name = _PAREN_RE.sub("", part).strip()
+        if name:
+            names.append(name)
+    return names
 
 
 def _extract_postcode(address: str) -> str | None:
@@ -137,6 +155,8 @@ class RASource(BaseSource):
 
         postcode = _extract_postcode(address)
         artists = [a["name"] for a in (ev.get("artists") or []) if a.get("name")]
+        if not artists and ev.get("lineup"):
+            artists = _parse_lineup(ev["lineup"])
         genres = [g["name"] for g in (ev.get("genres") or []) if g.get("name")]
 
         # content_url is a relative path like "/events/uk/london/venue/..."
