@@ -6,5 +6,6 @@
   "r&b": ["rnb", "contemporary r&b", "rhythm and blues"],
   "reggae": ["dub", "ska", "dancehall"],
   "blues": ["chicago blues", "delta blues"],
-  "hip-hop": ["hip hop", "rap", "grime"]
+  "hip-hop": ["hip hop", "rap", "grime"],
+  "afrobeats": ["afrobeat", "afro-beats", "afro beats", "afropop", "afro pop", "afro-pop", "afro", "highlife", "jùjú"]
 }

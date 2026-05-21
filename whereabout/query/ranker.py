@@ -59,6 +59,15 @@ def rank(query: Query) -> list[dict]:
     raws = [r for r in raws
             if query.date_range_start_utc <= r.date_start_utc <= query.date_range_end_utc]
 
+    # Dedup cross-source duplicates: same venue + same start time → keep the one with more artists
+    seen: dict[tuple, RawEvent] = {}
+    for raw in raws:
+        key = (raw.venue_postcode or raw.venue_name, raw.date_start_utc)
+        existing = seen.get(key)
+        if existing is None or len(raw.artists) > len(existing.artists):
+            seen[key] = raw
+    raws = list(seen.values())
+
     # Sort by date ascending
     raws.sort(key=lambda r: r.date_start_utc)
 

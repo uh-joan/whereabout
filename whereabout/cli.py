@@ -150,7 +150,9 @@ def query_cmd(
     delta_days = max(1, (q.date_range_end_utc - q.date_range_start_utc).days)
     if delta_days == 1:
         date_label = "tonight"
-    elif delta_days <= 3:
+    elif delta_days == 2:
+        date_label = "tomorrow"
+    elif delta_days <= 4:
         date_label = "this weekend"
     elif delta_days <= 7:
         date_label = "this week"
