@@ -144,7 +144,12 @@ def query_cmd(
         if m:
             typer.echo(f"Unknown neighbourhood. Did you mean: {m.group(1)}?")
 
-    neighbourhood_label = q.neighbourhood or cfg.home_neighbourhood or "London"
+    # Always resolve to a specific neighbourhood — fall back to home, never "London"
+    effective_neighbourhood = q.neighbourhood or cfg.home_neighbourhood
+    if effective_neighbourhood:
+        q = q.model_copy(update={"neighbourhood": effective_neighbourhood})
+
+    neighbourhood_label = effective_neighbourhood or "London"
     genre_label = "/".join(q.genres) if q.genres else "all genres"
     query_label = f"{genre_label} in {neighbourhood_label} — next {horizon_days} days"
 
@@ -157,7 +162,9 @@ def query_cmd(
     if fmt == "json":
         typer.echo(list_view.render_json(results))
     else:
-        typer.echo(list_view.render_markdown(results, query_label))
+        sources = sorted({r["source"] for r in results}) if results else []
+        source_note = "live (" + " + ".join(s.replace("_", " ").upper() for s in sources) + ")" if sources else "live"
+        typer.echo(list_view.render_markdown(results, query_label, source_note))
 
 
 @app.command("detail")
