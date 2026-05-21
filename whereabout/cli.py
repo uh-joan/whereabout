@@ -131,9 +131,6 @@ def query_cmd(
     try:
         q = parser.parse(text)
     except Exception as e:
-        if "ANTHROPIC_API_KEY" in str(e) or "api_key" in str(e).lower():
-            typer.echo("Error: ANTHROPIC_API_KEY not set. Run: export ANTHROPIC_API_KEY=sk-ant-...", err=True)
-            raise typer.Exit(1)
         typer.echo(f"Parser error: {e}", err=True)
         raise typer.Exit(1)
 
