@@ -1,0 +1,64 @@
+{
+  "data": [
+    {
+      "id": "brixton-jazz-001",
+      "name": "Ezra Collective — Album Launch",
+      "date": "2026-06-06T20:00:00Z",
+      "artists": [{"name": "Ezra Collective"}],
+      "venues": [{"name": "Hootananny Brixton"}],
+      "address": "95 Effra Rd, London SW2 1DF",
+      "location": {"zip": "SW2 1DF", "lat": 51.4604, "lng": -0.1143},
+      "genre_tags": ["jazz", "afrobeat"],
+      "url": "https://dice.fm/event/brixton-jazz-001",
+      "ticket_types": [{"price": {"total": 1500}}]
+    },
+    {
+      "id": "brixton-soul-001",
+      "name": "Cleo Sol — Intimate Session",
+      "date": "2026-06-07T19:30:00Z",
+      "artists": [{"name": "Cleo Sol"}],
+      "venues": [{"name": "Effra Hall Tavern"}],
+      "address": "38 Kellett Rd, London SW2 1EB",
+      "location": {"zip": "SW2 1EB", "lat": 51.4598, "lng": -0.1128},
+      "genre_tags": ["soul", "neo-soul"],
+      "url": "https://dice.fm/event/brixton-soul-001",
+      "ticket_types": [{"price": {"total": 1200}}]
+    },
+    {
+      "id": "brixton-jazz-002",
+      "name": "Nubya Garcia Quartet",
+      "date": "2026-06-13T20:30:00Z",
+      "artists": [{"name": "Nubya Garcia"}],
+      "venues": [{"name": "Hootananny Brixton"}],
+      "address": "95 Effra Rd, London SW2 1DF",
+      "location": {"zip": "SW2 1DF", "lat": 51.4604, "lng": -0.1143},
+      "genre_tags": ["jazz"],
+      "url": "https://dice.fm/event/brixton-jazz-002",
+      "ticket_types": [{"price": {"total": 1800}}]
+    },
+    {
+      "id": "brixton-soul-002",
+      "name": "Yussef Dayes — Soul Night",
+      "date": "2026-06-14T21:00:00Z",
+      "artists": [{"name": "Yussef Dayes"}],
+      "venues": [{"name": "Electric Brixton"}],
+      "address": "Town Hall Parade, London SW2 1RJ",
+      "location": {"zip": "SW2 1RJ", "lat": 51.4612, "lng": -0.1149},
+      "genre_tags": ["jazz", "soul"],
+      "url": "https://dice.fm/event/brixton-soul-002",
+      "ticket_types": [{"price": {"total": 2000}}]
+    },
+    {
+      "id": "brixton-funk-001",
+      "name": "Kokoroko — Afrobeat Special",
+      "date": "2026-06-20T20:00:00Z",
+      "artists": [{"name": "Kokoroko"}],
+      "venues": [{"name": "Brixton Jamm"}],
+      "address": "261 Brixton Rd, London SW9 6LH",
+      "location": {"zip": "SW9 6LH", "lat": 51.4629, "lng": -0.1142},
+      "genre_tags": ["afrobeat", "jazz"],
+      "url": "https://dice.fm/event/brixton-funk-001",
+      "ticket_types": [{"price": {"total": 1400}}]
+    }
+  ]
+}

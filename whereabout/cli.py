@@ -1,0 +1,241 @@
+from __future__ import annotations
+import typer
+
+app = typer.Typer(help="Hyper-local live music discovery")
+config_app = typer.Typer(help="Manage whereabout configuration")
+app.add_typer(config_app, name="config")
+
+
+@app.callback(invoke_without_command=True)
+def main(
+    ctx: typer.Context,
+    version: bool = typer.Option(False, "--version", is_eager=True, help="Show version and exit"),
+) -> None:
+    from whereabout.logging import configure_logging
+    configure_logging()
+    if version:
+        from whereabout import __version__
+        typer.echo(f"whereabout {__version__}")
+        raise typer.Exit()
+    if ctx.invoked_subcommand is None:
+        typer.echo(ctx.get_help())
+
+
+@config_app.command("init")
+def config_init() -> None:
+    """Interactive first-run setup."""
+    from whereabout.config import UserConfig
+    from whereabout import neighbourhoods as nb
+    typer.echo("Whereabout setup")
+    known = nb.list_all()
+    home = typer.prompt(f"Your home neighbourhood (e.g. Brixton, Camden). Known: {', '.join(known[:5])}...")
+    resolved = nb.resolve_name(home)
+    if resolved is None:
+        suggestions = nb.did_you_mean(home)
+        if suggestions:
+            typer.echo(f"Unknown neighbourhood '{home}'. Did you mean: {', '.join(suggestions)}?")
+        else:
+            typer.echo(f"Unknown neighbourhood '{home}'. Run 'whereabout config list-neighbourhoods' to see all.")
+        resolved = home  # Save as-is and let user fix later
+    cfg = UserConfig(home_neighbourhood=resolved)
+    cfg.save()
+    typer.echo(f"Saved. Home neighbourhood: {resolved}")
+
+
+@config_app.command("get")
+def config_get(key: str) -> None:
+    """Get a config value."""
+    from whereabout.config import UserConfig
+    cfg = UserConfig.load()
+    value = getattr(cfg, key, None)
+    if value is None:
+        typer.echo(f"Unknown key: {key}", err=True)
+        raise typer.Exit(1)
+    typer.echo(str(value))
+
+
+@config_app.command("set")
+def config_set(key: str, value: str) -> None:
+    """Set a config value."""
+    from whereabout.config import UserConfig
+    cfg = UserConfig.load()
+    if not hasattr(cfg, key):
+        typer.echo(f"Unknown key: {key}", err=True)
+        raise typer.Exit(1)
+    field_type = type(getattr(cfg, key))
+    setattr(cfg, key, field_type(value))
+    cfg.save()
+    typer.echo(f"Set {key} = {value}")
+
+
+@config_app.command("list-neighbourhoods")
+def config_list_neighbourhoods() -> None:
+    """List all known neighbourhoods."""
+    from whereabout import neighbourhoods as nb
+    for name in sorted(nb.list_all()):
+        typer.echo(name)
+
+
+@app.command("refresh")
+def refresh(
+    source: str = typer.Option("dice_fm", "--source", help="Source ID to refresh"),
+    horizon_days: int = typer.Option(14, "--horizon-days", help="Days ahead to fetch"),
+) -> None:
+    """Admin: refresh the knowledge base from a source (v1.0: DICE only)."""
+    import asyncio
+    from datetime import datetime, timezone, timedelta
+    from whereabout.sources.dice_fm import DICESource
+    from whereabout.kb.ingest import ingest
+    from whereabout.config import UserConfig
+    from whereabout.models import Query
+
+    cfg = UserConfig.load()
+    now = datetime.now(timezone.utc)
+    query = Query(
+        raw_text=f"refresh {source}",
+        genres=[],
+        neighbourhood=cfg.home_neighbourhood or None,
+        date_range_start_utc=now,
+        date_range_end_utc=now + timedelta(days=horizon_days),
+    )
+
+    if source != "dice_fm":
+        typer.echo(f"Unknown source: {source}. Only 'dice_fm' is available in v1.0.", err=True)
+        raise typer.Exit(1)
+
+    src = DICESource()
+    typer.echo(f"Fetching from DICE FM (horizon: {horizon_days} days)...")
+    raws = asyncio.run(src.fetch(query))
+    typer.echo(f"Fetched {len(raws)} events.")
+    upserted = ingest(raws)
+    typer.echo(f"Upserted {upserted} new events into KB.")
+
+
+@app.command("query")
+def query_cmd(
+    text: str = typer.Argument(..., help="Natural language query, e.g. 'jazz in brixton'"),
+    fmt: str = typer.Option("markdown", "--format", help="Output format: markdown or json"),
+    limit: int = typer.Option(10, "--limit"),
+    horizon_days: int = typer.Option(14, "--horizon-days"),
+) -> None:
+    """Search for live music events."""
+    from whereabout.query import parser, ranker
+    from whereabout.output import list_view
+    from whereabout.config import UserConfig
+
+    cfg = UserConfig.load()
+    if cfg.is_first_run():
+        typer.echo("First run! Let's set your home neighbourhood first.")
+        config_init()
+
+    try:
+        q = parser.parse(text)
+    except Exception as e:
+        if "ANTHROPIC_API_KEY" in str(e) or "api_key" in str(e).lower():
+            typer.echo("Error: ANTHROPIC_API_KEY not set. Run: export ANTHROPIC_API_KEY=sk-ant-...", err=True)
+            raise typer.Exit(1)
+        typer.echo(f"Parser error: {e}", err=True)
+        raise typer.Exit(1)
+
+    # Surface did-you-mean if present
+    if "[did_you_mean:" in q.raw_text:
+        import re
+        m = re.search(r"\[did_you_mean:(.+?)\]", q.raw_text)
+        if m:
+            typer.echo(f"Unknown neighbourhood. Did you mean: {m.group(1)}?")
+
+    neighbourhood_label = q.neighbourhood or cfg.home_neighbourhood or "London"
+    genre_label = "/".join(q.genres) if q.genres else "all genres"
+    query_label = f"{genre_label} in {neighbourhood_label} — next {horizon_days} days"
+
+    try:
+        results = ranker.rank(q)
+    except Exception as e:
+        typer.echo(f"Fetch error: {e}", err=True)
+        raise typer.Exit(1)
+
+    if fmt == "json":
+        typer.echo(list_view.render_json(results))
+    else:
+        typer.echo(list_view.render_markdown(results, query_label))
+
+
+@app.command("detail")
+def detail_cmd(
+    event_id: str = typer.Argument(..., help="Event ID or index from last query (e.g. '1' or 'dice_fm:abc123')"),
+    fmt: str = typer.Option("markdown", "--format"),
+) -> None:
+    """Get detailed info and artist bios for a specific event."""
+    import json
+    from zoneinfo import ZoneInfo
+    from datetime import datetime, timezone
+    from whereabout.db import get_connection
+    from whereabout.output import detail_view
+    from whereabout.query.enrich import enrich_artist
+
+    with get_connection() as conn:
+        row = conn.execute(
+            """SELECT e.*, v.name as venue_name, v.postcode as venue_postcode
+               FROM events e LEFT JOIN venues v ON e.venue_id = v.id
+               WHERE e.stable_hash LIKE ? OR e.source_urls LIKE ?
+               LIMIT 1""",
+            (f"%{event_id}%", f"%{event_id}%")
+        ).fetchone()
+
+        if not row:
+            typer.echo(f"Event not found: {event_id}", err=True)
+            raise typer.Exit(1)
+
+        artist_rows = conn.execute(
+            """SELECT a.name FROM artists a
+               JOIN event_artists ea ON a.id = ea.artist_id
+               WHERE ea.event_id = ?""",
+            (row["id"],)
+        ).fetchall()
+
+    dt = datetime.fromisoformat(row["date_start_utc"].replace("Z", "+00:00"))
+    local_dt = dt.astimezone(ZoneInfo("Europe/London"))
+    artists = [r["name"] for r in artist_rows]
+
+    result = {
+        "title": row["title"],
+        "artists": artists,
+        "venue": row["venue_name"] or "",
+        "postcode": row["venue_postcode"] or "",
+        "date_local": local_dt.strftime("%a %d %b"),
+        "time_local": local_dt.strftime("%H:%M"),
+        "ticket_url": row["ticket_url"],
+        "price": "",
+        "genres": json.loads(row["genres"]),
+    }
+
+    # Enrich each artist
+    enrichments = {}
+    for artist in artists:
+        try:
+            enrichments[artist] = enrich_artist(artist)
+        except Exception as e:
+            enrichments[artist] = {"bio": f"(enrichment unavailable: {e})", "genres": [], "notable_for": ""}
+
+    typer.echo(detail_view.render_markdown(result, enrichments))
+
+
+@app.command("doctor")
+def doctor(prune: bool = typer.Option(False, "--prune", help="Also prune old events")) -> None:
+    """Run health checks."""
+    from whereabout import doctor as doc
+    from whereabout.db import get_connection
+    results = doc.run_checks()
+    all_pass = True
+    for passed, msg in results:
+        typer.echo(msg)
+        if not passed:
+            all_pass = False
+    if prune:
+        with get_connection() as conn:
+            deleted = conn.execute(
+                "DELETE FROM events WHERE date_start_utc < datetime('now', '-7 days')"
+            ).rowcount
+            conn.commit()
+        typer.echo(f"Pruned {deleted} past events.")
+    raise typer.Exit(0 if all_pass else 1)

@@ -1,0 +1,10 @@
+{
+  "jazz": ["nu-jazz", "jazz-fusion", "bebop", "free jazz", "cool jazz", "latin jazz", "smooth jazz", "acid jazz", "jazz funk"],
+  "soul": ["neo-soul", "nu-soul", "classic soul", "deep soul", "blue-eyed soul"],
+  "funk": ["afrofunk", "p-funk", "electrofunk"],
+  "electronic": ["electronica", "techno", "house", "drum and bass", "dnb", "ambient"],
+  "r&b": ["rnb", "contemporary r&b", "rhythm and blues"],
+  "reggae": ["dub", "ska", "dancehall"],
+  "blues": ["chicago blues", "delta blues"],
+  "hip-hop": ["hip hop", "rap", "grime"]
+}
