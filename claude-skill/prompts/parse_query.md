@@ -12,11 +12,11 @@ Return ONLY valid JSON with this exact structure:
 }
 
 ## Rules
-- genres: normalise to canonical forms (jazz, soul, funk, electronic, r&b, reggae, blues, hip-hop). An empty list means all genres.
+- genres: normalise to canonical forms (jazz, soul, funk, electronic, r&b, reggae, blues, hip-hop, afrobeats). An empty list means all genres.
 - neighbourhood: MUST be exactly one of the enum values below, or null. Do NOT invent names.
 - If the user says "around me" or "near me" with no specific place, set neighbourhood to null (the app will use their configured home neighbourhood).
 - If the user mentions a place not in the enum, set neighbourhood to null and did_you_mean to the closest match from the enum.
-- date_range_days: extract from "this weekend" (3), "tonight" (1), "this week" (7), "next week" (14), "this month" (30). Default: 14.
+- date_range_days: extract from "tonight" (1), "tomorrow" (2), "this weekend" (4), "this week" (7), "next week" (14), "this month" (30). Default: 14. "This weekend" always covers Friday–Sunday regardless of today's day.
 
 ## Neighbourhood enum
 {{NEIGHBOURHOOD_ENUM}}
@@ -26,7 +26,7 @@ Input: "show me jazz gigs around me"
 Output: {"genres": ["jazz"], "neighbourhood": null, "date_range_days": 14, "did_you_mean": null}
 
 Input: "soul live music in brixton this weekend"
-Output: {"genres": ["soul"], "neighbourhood": "Brixton", "date_range_days": 3, "did_you_mean": null}
+Output: {"genres": ["soul"], "neighbourhood": "Brixton", "date_range_days": 4, "did_you_mean": null}
 
 Input: "neo-soul in hackney"
 Output: {"genres": ["soul"], "neighbourhood": "Dalston", "date_range_days": 14, "did_you_mean": null}
