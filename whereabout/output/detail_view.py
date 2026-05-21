@@ -8,7 +8,7 @@ def render_markdown(result: dict, enrichments: dict[str, dict]) -> str:
     lines.append(f"**{result['date_local']} {result['time_local']}  ·  {result['venue']}**")
 
     if result.get("postcode"):
-        lines.append(f"Neighbourhood: {result['postcode']}")
+        lines.append(f"Postcode: {result['postcode']}")
 
     if result.get("ticket_url"):
         lines.append(f"\n[Get Tickets]({result['ticket_url']})  {result.get('price', '')}")
