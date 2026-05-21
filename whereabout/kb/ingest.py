@@ -21,15 +21,15 @@ _GENRE_REVERSE: dict[str, str] = _build_reverse_alias_map()
 
 
 def stable_hash(raw: RawEvent) -> str:
-    venue_pc = (raw.venue_postcode or "").upper().replace(" ", "")
-    date_min = raw.date_start_utc.strftime("%Y%m%dT%H%M")
-    first_artist = (
-        raw.artists[0].lower().strip() if raw.artists else raw.title.lower().strip()
-    )
-    # Fall back to source|source_event_id when EITHER signal is missing
-    if not first_artist or not venue_pc:
+    # Source ID is the most stable key — use it whenever available
+    if raw.source_event_id:
         key = f"{raw.source}|{raw.source_event_id}"
     else:
+        venue_pc = (raw.venue_postcode or "").upper().replace(" ", "")
+        date_min = raw.date_start_utc.strftime("%Y%m%dT%H%M")
+        first_artist = (
+            raw.artists[0].lower().strip() if raw.artists else raw.title.lower().strip()
+        )
         key = f"{venue_pc}|{date_min}|{first_artist}"
     return hashlib.sha1(key.encode("utf-8")).hexdigest()
 
