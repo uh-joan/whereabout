@@ -116,9 +116,9 @@ def query_cmd(
     text: str = typer.Argument(..., help="Natural language query, e.g. 'jazz in brixton'"),
     fmt: str = typer.Option("markdown", "--format", help="Output format: markdown or json"),
     limit: int = typer.Option(10, "--limit"),
-    horizon_days: int = typer.Option(14, "--horizon-days"),
 ) -> None:
     """Search for live music events."""
+    import re
     from whereabout.query import parser, ranker
     from whereabout.output import list_view
     from whereabout.config import UserConfig
@@ -134,12 +134,11 @@ def query_cmd(
         typer.echo(f"Parser error: {e}", err=True)
         raise typer.Exit(1)
 
-    # Surface did-you-mean if present
+    # Surface did-you-mean substitution
     if "[did_you_mean:" in q.raw_text:
-        import re
         m = re.search(r"\[did_you_mean:(.+?)\]", q.raw_text)
         if m:
-            typer.echo(f"Unknown neighbourhood. Did you mean: {m.group(1)}?")
+            typer.echo(f"No exact match — showing results for {m.group(1)}.")
 
     # Always resolve to a specific neighbourhood — fall back to home, never "London"
     effective_neighbourhood = q.neighbourhood or cfg.home_neighbourhood
@@ -148,7 +147,16 @@ def query_cmd(
 
     neighbourhood_label = effective_neighbourhood or "London"
     genre_label = "/".join(q.genres) if q.genres else "all genres"
-    query_label = f"{genre_label} in {neighbourhood_label} — next {horizon_days} days"
+    delta_days = max(1, (q.date_range_end_utc - q.date_range_start_utc).days)
+    if delta_days == 1:
+        date_label = "tonight"
+    elif delta_days <= 3:
+        date_label = "this weekend"
+    elif delta_days <= 7:
+        date_label = "this week"
+    else:
+        date_label = f"next {delta_days} days"
+    query_label = f"{genre_label} in {neighbourhood_label} — {date_label}"
 
     try:
         results = ranker.rank(q)
