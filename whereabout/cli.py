@@ -216,11 +216,13 @@ def detail_cmd(
         "genres": json.loads(row["genres"]),
     }
 
+    event_genres = result["genres"]
+
     # Enrich each artist
     enrichments = {}
     for artist in artists:
         try:
-            enrichments[artist] = enrich_artist(artist)
+            enrichments[artist] = enrich_artist(artist, context_genres=event_genres)
         except Exception as e:
             enrichments[artist] = {"bio": f"(enrichment unavailable: {e})", "genres": [], "notable_for": ""}
 

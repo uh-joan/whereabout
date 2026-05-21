@@ -18,25 +18,26 @@ def patch_token_ledger(monkeypatch):
     monkeypatch.setattr("whereabout.query.enrich.check_and_record", lambda i, o: None)
 
 
-def test_artist_bio_cached_30d(tmp_path, monkeypatch):
+def test_artist_bio_cached_7d(tmp_path, monkeypatch):
     """Artist bio cached in DB is returned without calling Claude again."""
     import whereabout.db as db_mod
-    db_path = tmp_path / "test.db"
-    monkeypatch.setattr(db_mod, "DB_PATH", db_path)
+    monkeypatch.setattr(db_mod, "DB_PATH", tmp_path / "test.db")
 
     from whereabout.query.enrich import enrich_artist
 
-    # First call: mock Claude
+    # lookup_artist returns nothing so Claude is used
     bio_payload = {"bio": "Test artist biography.", "genres": ["jazz"], "notable_for": "Known for test"}
-    with patch("anthropic.Anthropic") as mock_client:
+    with patch("whereabout.query.enrich.lookup_artist", return_value=None), \
+         patch("anthropic.Anthropic") as mock_client:
         mock_client.return_value.messages.create.return_value = mock_claude_response(bio_payload)
         result1 = enrich_artist("Test Artist")
 
     assert result1["bio"] == "Test artist biography."
     assert result1["cached"] is False
 
-    # Second call within 30 days: should NOT call Claude
-    with patch("anthropic.Anthropic") as mock_client:
+    # Second call within 7 days: returned from DB cache, no network call
+    with patch("whereabout.query.enrich.lookup_artist", return_value=None), \
+         patch("anthropic.Anthropic") as mock_client:
         result2 = enrich_artist("Test Artist")
         mock_client.return_value.messages.create.assert_not_called()
 
@@ -50,9 +51,7 @@ def test_token_budget_refuses_when_daily_exhausted(tmp_path, monkeypatch):
     monkeypatch.setattr(tl, "LEDGER_PATH", tmp_path / "ledger.json")
     monkeypatch.setattr("whereabout.query.enrich.check_and_record", tl.check_and_record)
 
-    # Exhaust the daily cap
     from whereabout.token_ledger import BudgetExceeded, DAILY_CAP, _save
-    from datetime import datetime
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     _save({today: {"input_tokens": DAILY_CAP, "output_tokens": 0}})
 
@@ -60,7 +59,8 @@ def test_token_budget_refuses_when_daily_exhausted(tmp_path, monkeypatch):
     monkeypatch.setattr(db_mod, "DB_PATH", tmp_path / "test.db")
 
     from whereabout.query.enrich import enrich_artist
-    with patch("anthropic.Anthropic") as mock_client:
+    with patch("whereabout.query.enrich.lookup_artist", return_value=None), \
+         patch("anthropic.Anthropic") as mock_client:
         mock_client.return_value.messages.create.return_value = mock_claude_response(
             {"bio": "x", "genres": [], "notable_for": ""}
         )
