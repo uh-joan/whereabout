@@ -1,11 +1,10 @@
 from __future__ import annotations
-import os
+import shutil
 import sqlite3
 from pathlib import Path
 
 from whereabout.config import CONFIG_PATH
 from whereabout.db import DB_PATH
-from whereabout.token_ledger import get_today_usage
 
 
 def run_checks() -> list[tuple[bool, str]]:
@@ -59,13 +58,10 @@ def run_checks() -> list[tuple[bool, str]]:
     except Exception as e:
         results.append((False, f"✗ kb_meta — error: {e}"))
 
-    # 5. api_key
-    key = os.environ.get("ANTHROPIC_API_KEY", "")
-    if key and key.startswith("sk-ant-"):
-        results.append((True, "✓ api_key"))
-    elif key:
-        results.append((True, "✓ api_key  (set, format unverified)"))
+    # 5. claude CLI
+    if shutil.which("claude"):
+        results.append((True, "✓ claude   (CLI available, uses subscription auth)"))
     else:
-        results.append((False, "✗ api_key — ANTHROPIC_API_KEY not set"))
+        results.append((False, "✗ claude   — CLI not found; install Claude Code: https://claude.ai/code"))
 
     return results
