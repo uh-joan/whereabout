@@ -7,6 +7,7 @@ import anthropic
 
 from whereabout.token_ledger import check_and_record
 from whereabout.db import get_connection
+from whereabout.kb.artist_lookup import lookup_artist
 
 
 _PROMPT_PATH = Path(__file__).parent.parent.parent / "claude-skill" / "prompts" / "enrich_artist.md"
@@ -19,10 +20,10 @@ def _load_prompt() -> str:
     return 'Return JSON: {"bio": "No information available.", "genres": [], "notable_for": ""}'
 
 
-def enrich_artist(artist_name: str) -> dict:
+def enrich_artist(artist_name: str, context_genres: list[str] | None = None) -> dict:
     """
-    Fetch artist bio via Claude, cached 7 days in artists table.
-    Returns dict with bio, genres, notable_for.
+    Fetch artist bio, cached 7 days. Tries Last.fm → RA → Claude.
+    context_genres: event genres used to validate Last.fm matches.
     """
     # Check DB cache first
     with get_connection() as conn:
@@ -42,22 +43,33 @@ def enrich_artist(artist_name: str) -> dict:
                 "cached": True,
             }
 
-    # Fetch from Claude
-    system_prompt = _load_prompt()
-    client = anthropic.Anthropic()
-    message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=256,
-        system=system_prompt,
-        messages=[{"role": "user", "content": f"Artist: {artist_name}"}],
-    )
-    check_and_record(message.usage.input_tokens, message.usage.output_tokens)
+    # Try structured sources first (Last.fm → RA), fall back to Claude
+    looked_up = lookup_artist(artist_name, context_genres or [])
+    if looked_up:
+        data = {
+            "bio": looked_up["bio"],
+            "genres": looked_up.get("genres", []),
+            "notable_for": "",
+            "links": looked_up.get("links", {}),
+        }
+    else:
+        system_prompt = _load_prompt()
+        client = anthropic.Anthropic()
+        message = client.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=256,
+            system=system_prompt,
+            messages=[{"role": "user", "content": f"Artist: {artist_name}"}],
+        )
+        check_and_record(message.usage.input_tokens, message.usage.output_tokens)
 
-    raw = message.content[0].text.strip()
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError:
-        data = {"bio": raw[:200], "genres": [], "notable_for": ""}
+        raw = message.content[0].text.strip()
+        if raw.startswith("```"):
+            raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            data = {"bio": raw[:200], "genres": [], "notable_for": ""}
 
     # Cache in DB
     now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
