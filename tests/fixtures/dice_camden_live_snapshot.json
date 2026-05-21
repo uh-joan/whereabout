@@ -1,0 +1,36 @@
+{
+  "payload": {
+    "events": [
+      {
+        "id": "camden-jazz-001",
+        "name": "Shabaka Hutchings — Solo Performance",
+        "date": "2026-06-05T20:00:00Z",
+        "artists": [{"name": "Shabaka Hutchings"}],
+        "venue": {"name": "Jazz Cafe", "address": "5 Parkway, London NW1 7PG", "postcode": "NW1 7PG", "latitude": 51.5382, "longitude": -0.1444},
+        "genres": ["jazz"],
+        "url": "https://dice.fm/event/camden-jazz-001",
+        "ticket_types": [{"price": {"total": 2200}}]
+      },
+      {
+        "id": "camden-soul-001",
+        "name": "Moses Boyd — Live Band",
+        "date": "2026-06-12T21:00:00Z",
+        "artists": [{"name": "Moses Boyd"}],
+        "venue": {"name": "Jazz Cafe", "address": "5 Parkway, London NW1 7PG", "postcode": "NW1 7PG", "latitude": 51.5382, "longitude": -0.1444},
+        "genres": ["jazz", "soul"],
+        "url": "https://dice.fm/event/camden-soul-001",
+        "ticket_types": [{"price": {"total": 1800}}]
+      },
+      {
+        "id": "camden-jazz-002",
+        "name": "Yazz Ahmed Quintet",
+        "date": "2026-06-19T20:30:00Z",
+        "artists": [{"name": "Yazz Ahmed"}],
+        "venue": {"name": "Jazz Cafe", "address": "5 Parkway, London NW1 7PG", "postcode": "NW1 7PG", "latitude": 51.5382, "longitude": -0.1444},
+        "genres": ["jazz"],
+        "url": "https://dice.fm/event/camden-jazz-002",
+        "ticket_types": [{"price": {"total": 1600}}]
+      }
+    ]
+  }
+}
