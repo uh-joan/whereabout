@@ -10,7 +10,7 @@ from whereabout.db import get_connection
 
 
 _PROMPT_PATH = Path(__file__).parent.parent.parent / "claude-skill" / "prompts" / "enrich_artist.md"
-_CACHE_TTL_DAYS = 30
+_CACHE_TTL_DAYS = 7
 
 
 def _load_prompt() -> str:
@@ -21,7 +21,7 @@ def _load_prompt() -> str:
 
 def enrich_artist(artist_name: str) -> dict:
     """
-    Fetch artist bio via Claude, cached 30 days in artists table.
+    Fetch artist bio via Claude, cached 7 days in artists table.
     Returns dict with bio, genres, notable_for.
     """
     # Check DB cache first

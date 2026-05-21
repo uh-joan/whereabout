@@ -1,26 +1,55 @@
 from __future__ import annotations
 import asyncio
+import json
+from pathlib import Path
 from whereabout.models import Query, RawEvent, Event, Venue, Artist
 from whereabout.sources.dice_fm import DICESource
+from whereabout.sources.resident_advisor import RASource
 from whereabout import neighbourhoods as nb
 from whereabout.kb.ingest import ingest
+
+_GENRE_ALIASES: dict[str, list[str]] = json.loads(
+    (Path(__file__).parent.parent / "data" / "genre_aliases.json").read_text()
+)
+
+
+def _expand_genres(genres: list[str]) -> set[str]:
+    expanded: set[str] = set()
+    for g in genres:
+        gl = g.lower()
+        expanded.add(gl)
+        for alias in _GENRE_ALIASES.get(gl, []):
+            expanded.add(alias.lower())
+    return expanded
+
+
+async def _fetch_all(query: Query) -> list[RawEvent]:
+    dice_results, ra_results = await asyncio.gather(
+        DICESource().fetch(query),
+        RASource().fetch(query),
+        return_exceptions=True,
+    )
+    raws: list[RawEvent] = []
+    if isinstance(dice_results, list):
+        raws.extend(dice_results)
+    if isinstance(ra_results, list):
+        raws.extend(ra_results)
+    return raws
 
 
 def rank(query: Query) -> list[dict]:
     """
-    Fetch from DICE live, filter by neighbourhood, sort by date.
+    Fetch from DICE and RA live, filter by neighbourhood, sort by date.
     Returns list of dicts ready for list_view rendering.
     """
-    source = DICESource()
-    raws: list[RawEvent] = asyncio.run(source.fetch(query))
+    raws: list[RawEvent] = asyncio.run(_fetch_all(query))
 
     # Persist to KB for card/detail access later
     if raws:
         ingest(raws)
 
-    # Filter by neighbourhood if specified
-    if query.neighbourhood:
-        raws = _filter_by_neighbourhood(raws, query.neighbourhood)
+    # Always enforce neighbourhood — hyperlocal only, no generic "London" events
+    raws = _filter_by_neighbourhood(raws, query.neighbourhood)
 
     # Filter by genre if specified
     if query.genres:
@@ -36,18 +65,21 @@ def rank(query: Query) -> list[dict]:
     return [_to_result_dict(r, i + 1) for i, r in enumerate(raws[:query.limit])]
 
 
-def _filter_by_neighbourhood(raws: list[RawEvent], neighbourhood: str) -> list[RawEvent]:
+def _filter_by_neighbourhood(raws: list[RawEvent], neighbourhood: str | None) -> list[RawEvent]:
     result = []
     for raw in raws:
-        if raw.venue_postcode:
-            resolved = nb.resolve_postcode_prefix(raw.venue_postcode)
-            if resolved and resolved.lower() == neighbourhood.lower():
-                result.append(raw)
+        if not raw.venue_postcode:
+            continue
+        resolved = nb.resolve_postcode_prefix(raw.venue_postcode)
+        if not resolved:
+            continue
+        if neighbourhood is None or resolved.lower() == neighbourhood.lower():
+            result.append(raw)
     return result
 
 
 def _filter_by_genre(raws: list[RawEvent], genres: list[str]) -> list[RawEvent]:
-    genre_set = {g.lower() for g in genres}
+    genre_set = _expand_genres(genres)
     result = []
     for raw in raws:
         # Strip DICE namespace prefixes (e.g. "gig:jazz" → "jazz") before comparing
