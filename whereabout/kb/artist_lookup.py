@@ -4,6 +4,7 @@ import os
 import re
 import difflib
 from pathlib import Path
+from urllib.parse import quote
 import httpx
 
 _GENRE_ALIASES: dict[str, list[str]] = json.loads(
@@ -60,6 +61,12 @@ _COUNTRY_SUFFIX_RE = re.compile(r'\b(uk|us|usa|de|fr|nl|au|ca)\b', re.IGNORECASE
 _MIN_LISTENERS = 500
 _MIN_NAME_RATIO = 0.6
 
+_WIKIPEDIA_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summary/{}"
+_DISCOGS_SEARCH_URL = "https://api.discogs.com/database/search"
+_DISCOGS_ARTIST_URL = "https://api.discogs.com/artists/{}"
+_DISCOGS_HEADERS = {"User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout"}
+_DISCOGS_MARKUP_RE = re.compile(r"\[(?:a|l|r|m|g|url)=[^\]]*\]|\[/?(?:i|b|u)\]")
+
 
 def _normalize_name(name: str) -> str:
     s = _COUNTRY_SUFFIX_RE.sub("", name.lower())
@@ -68,14 +75,20 @@ def _normalize_name(name: str) -> str:
 
 def lookup_artist(name: str, context_genres: list[str] | None = None) -> dict | None:
     """
-    Try Last.fm then RA for structured artist data.
+    Try Last.fm → RA → Wikipedia → Discogs for structured artist data.
     context_genres: event genres used to validate Last.fm matches (e.g. ["techno", "house"]).
     Returns {"bio": str, "genres": list[str], "links": dict} or None if not found.
     """
-    result = _lookup_lastfm(name, context_genres or [])
-    if result:
-        return result
-    return _lookup_ra(name)
+    for fn in (
+        lambda: _lookup_lastfm(name, context_genres or []),
+        lambda: _lookup_ra(name),
+        lambda: _lookup_wikipedia(name),
+        lambda: _lookup_discogs(name),
+    ):
+        result = fn()
+        if result:
+            return result
+    return None
 
 
 def _lookup_lastfm(name: str, context_genres: list[str]) -> dict | None:
@@ -163,3 +176,79 @@ def _lookup_ra(name: str) -> dict | None:
         return None
 
     return {"bio": bio, "genres": [], "links": links}
+
+
+def _lookup_wikipedia(name: str) -> dict | None:
+    try:
+        r = httpx.get(
+            _WIKIPEDIA_SUMMARY_URL.format(quote(name)),
+            headers={"User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout"},
+            timeout=8,
+            follow_redirects=True,
+        )
+        if r.status_code != 200:
+            return None
+        data = r.json()
+    except Exception:
+        return None
+
+    if data.get("type") != "standard":
+        return None
+
+    # Reject if returned title diverges too much from what we searched
+    returned_title = data.get("title", "")
+    ratio = difflib.SequenceMatcher(None, _normalize_name(name), _normalize_name(returned_title)).ratio()
+    if ratio < _MIN_NAME_RATIO:
+        return None
+
+    extract = data.get("extract", "").strip()
+    if not extract:
+        return None
+
+    return {"bio": extract, "genres": [], "source": "wikipedia"}
+
+
+def _lookup_discogs(name: str) -> dict | None:
+    try:
+        r = httpx.get(
+            _DISCOGS_SEARCH_URL,
+            params={"q": name, "type": "artist", "per_page": 5},
+            headers=_DISCOGS_HEADERS,
+            timeout=8,
+        )
+        results = r.json().get("results") or []
+    except Exception:
+        return None
+
+    # Find the best name match
+    artist_id = None
+    for item in results:
+        title = item.get("title", "")
+        ratio = difflib.SequenceMatcher(None, _normalize_name(name), _normalize_name(title)).ratio()
+        if ratio >= _MIN_NAME_RATIO:
+            artist_id = item.get("id")
+            break
+
+    if not artist_id:
+        return None
+
+    try:
+        r2 = httpx.get(
+            _DISCOGS_ARTIST_URL.format(artist_id),
+            headers=_DISCOGS_HEADERS,
+            timeout=8,
+        )
+        artist = r2.json()
+    except Exception:
+        return None
+
+    profile = (artist.get("profile") or "").strip()
+    if not profile:
+        return None
+
+    # Strip Discogs wiki markup: [a=Name] → Name, [url=...], [i], [b], etc.
+    bio = _DISCOGS_MARKUP_RE.sub("", profile).strip()
+    urls = artist.get("urls") or []
+    links = {"website": urls[0]} if urls else {}
+
+    return {"bio": bio, "genres": [], "links": links, "source": "discogs"}
