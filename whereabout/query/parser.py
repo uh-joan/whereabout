@@ -42,9 +42,10 @@ def parse(raw_text: str) -> Query:
         if cfg.home_neighbourhood:
             neighbourhood_name = cfg.home_neighbourhood
 
-    # Return did-you-mean info via Query raw_text field for CLI to surface
+    # Use did-you-mean suggestion as neighbourhood; embed it for CLI to surface message
     effective_text = raw_text
     if did_you_mean_val and neighbourhood_name is None:
+        neighbourhood_name = did_you_mean_val
         effective_text = f"{raw_text} [did_you_mean:{did_you_mean_val}]"
 
     now = datetime.now(timezone.utc)
