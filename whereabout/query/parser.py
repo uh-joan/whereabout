@@ -3,12 +3,10 @@ import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-import anthropic
-
 from whereabout.models import Query
 from whereabout.config import UserConfig
 from whereabout import neighbourhoods as nb
-from whereabout.token_ledger import check_and_record
+from whereabout.claude_cli import call_claude
 
 
 _PROMPT_PATH = Path(__file__).parent.parent.parent / "claude-skill" / "prompts" / "parse_query.md"
@@ -26,17 +24,7 @@ def parse(raw_text: str) -> Query:
     template = _load_prompt_template()
     system_prompt = template.replace("{{NEIGHBOURHOOD_ENUM}}", neighbourhood_enum)
 
-    client = anthropic.Anthropic()
-    message = client.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=256,
-        system=system_prompt,
-        messages=[{"role": "user", "content": raw_text}],
-    )
-
-    check_and_record(message.usage.input_tokens, message.usage.output_tokens)
-
-    raw_json = message.content[0].text.strip()
+    raw_json = call_claude(raw_text, system_prompt=system_prompt)
     # Strip markdown fences if present
     if raw_json.startswith("```"):
         raw_json = raw_json.split("```")[1]

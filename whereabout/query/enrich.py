@@ -3,9 +3,7 @@ import json
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-import anthropic
-
-from whereabout.token_ledger import check_and_record
+from whereabout.claude_cli import call_claude
 from whereabout.db import get_connection
 from whereabout.kb.artist_lookup import lookup_artist
 
@@ -54,16 +52,7 @@ def enrich_artist(artist_name: str, context_genres: list[str] | None = None) -> 
         }
     else:
         system_prompt = _load_prompt()
-        client = anthropic.Anthropic()
-        message = client.messages.create(
-            model="claude-sonnet-4-5",
-            max_tokens=256,
-            system=system_prompt,
-            messages=[{"role": "user", "content": f"Artist: {artist_name}"}],
-        )
-        check_and_record(message.usage.input_tokens, message.usage.output_tokens)
-
-        raw = message.content[0].text.strip()
+        raw = call_claude(f"Artist: {artist_name}", system_prompt=system_prompt)
         if raw.startswith("```"):
             raw = raw.split("\n", 1)[-1].rsplit("```", 1)[0].strip()
         try:
