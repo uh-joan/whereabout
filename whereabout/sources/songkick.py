@@ -19,18 +19,22 @@ _MAX_PAGES = 10
 _ARTIST_SPLIT_RE = re.compile(r",\s*(?:and\s+)?|\s+and\s+")
 
 # Well-known London venues whose Songkick city label is generic "London"
-def _load_known_venue_postcodes() -> dict[str, str]:
+def _load_venue_data() -> tuple[dict[str, str], dict[str, str]]:
     import json
     from importlib.resources import files
     pkg = files("whereabout.data")
-    result: dict[str, str] = {}
+    postcodes: dict[str, str] = {}
+    canonical: dict[str, str] = {}
     for fname in ("venues.json", "songkick_venues.json"):
         for v in json.loads(pkg.joinpath(fname).read_text()):
+            name = v["name"]
             if v.get("postcode"):
-                result[v["name"]] = v["postcode"]
-    return result
+                postcodes[name] = v["postcode"]
+            if v.get("canonical"):
+                canonical[name] = v["canonical"]
+    return postcodes, canonical
 
-_KNOWN_VENUE_POSTCODES = _load_known_venue_postcodes()
+_KNOWN_VENUE_POSTCODES, _VENUE_CANONICAL_NAMES = _load_venue_data()
 
 
 def _artists_from_strong(text: str) -> list[str]:
@@ -127,6 +131,7 @@ class SongkickSource(BaseSource):
 
                 venue_el = li.select_one("p.location a.venue-link")
                 venue_name = venue_el.get_text(strip=True) if venue_el else ""
+                venue_name = _VENUE_CANONICAL_NAMES.get(venue_name, venue_name)
 
                 city_el = li.select_one("p.location span.city-name")
                 city = city_el.get_text(strip=True).split(",")[0].strip() if city_el else ""

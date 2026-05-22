@@ -19,7 +19,7 @@
   {"name": "Signature Brew Blackhorse Road","postcode": "E17 6PN"},
   {"name": "Moth Club",                     "postcode": "E9 6NU"},
   {"name": "Hackney Arts Centre",           "postcode": "E8 1EQ"},
-  {"name": "The Jazz Cafe",                 "postcode": "NW1 7PG"},
+  {"name": "The Jazz Cafe",                 "postcode": "NW1 7PG", "canonical": "Jazz Cafe"},
   {"name": "Electric Brixton",              "postcode": "SW2 1RJ"},
   {"name": "Printworks London",             "postcode": "SE16 7PJ"},
   {"name": "Fold",                          "postcode": "E16 2QT"}
