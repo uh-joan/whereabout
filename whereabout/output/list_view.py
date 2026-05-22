@@ -11,7 +11,8 @@ def render_markdown(results: list[dict], query_label: str, source_note: str = "l
         lines.append(
             f"  {r['index']}. {artists_str:<35} {r['date_local']} {r['time_local']}  {r['venue']}"
         )
-    lines.append(f"\nType 'more on <n>' or 'tickets for <n>' to drill in. Showing {len(results)} result(s).")
+    example_id = results[0]["stable_hash"][:12] if results else "<id>"
+    lines.append(f"\nShowing {len(results)} result(s). For details: whereabout detail {example_id}")
     lines.append(f"Source: {source_note}")
     return "\n".join(lines)
 
