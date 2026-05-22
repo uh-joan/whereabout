@@ -9,6 +9,8 @@ from textual.widgets import (
     Footer,
     Header,
     Input,
+    ListItem,
+    ListView,
     LoadingIndicator,
     Markdown,
     Static,
@@ -88,7 +90,92 @@ ChangeNeighbourhoodScreen {
 #nb-error.visible {
     display: block;
 }
+
+GenreFilterScreen {
+    align: center middle;
+    background: $background 70%;
+}
+
+#genre-box {
+    width: 44;
+    height: auto;
+    background: $surface;
+    border: thick $primary;
+    padding: 1 2;
+}
+
+#genre-title {
+    text-style: bold;
+    margin-bottom: 1;
+}
+
+#genre-list {
+    height: auto;
+    max-height: 15;
+    border: none;
+}
+
+#genre-hint {
+    color: $text-muted;
+    margin-top: 1;
+}
 """
+
+
+_GENRE_OPTIONS: list[tuple[str, str | None]] = [
+    ("All genres", None),
+    ("Jazz", "jazz"),
+    ("Electronic", "electronic"),
+    ("Hip-Hop", "hip-hop"),
+    ("R&B", "r&b"),
+    ("Soul", "soul"),
+    ("Funk", "funk"),
+    ("Blues", "blues"),
+    ("Reggae", "reggae"),
+    ("Afrobeats", "afrobeats"),
+    ("Drum & Bass", "drum & bass"),
+    ("House", "house"),
+    ("Disco", "disco"),
+]
+
+
+class GenreFilterScreen(ModalScreen[str | None]):
+    BINDINGS = [Binding("escape", "dismiss_none", "Cancel")]
+
+    def __init__(self, current: str | None = None) -> None:
+        super().__init__()
+        self._current = current
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="genre-box"):
+            yield Static("Filter by genre", id="genre-title")
+            yield ListView(
+                *[ListItem(Static(label), id=f"genre-{i}") for i, (label, _) in enumerate(_GENRE_OPTIONS)],
+                id="genre-list",
+            )
+            yield Static("↑↓  ·  Enter to apply  ·  Esc to cancel", id="genre-hint")
+
+    def on_mount(self) -> None:
+        lv = self.query_one("#genre-list", ListView)
+        lv.focus()
+        if self._current:
+            for i, (_, val) in enumerate(_GENRE_OPTIONS):
+                if val == self._current:
+                    lv.index = i
+                    break
+
+    @on(ListView.Selected)
+    def handle_selected(self, event: ListView.Selected) -> None:
+        item_id = event.item.id or ""
+        if item_id.startswith("genre-"):
+            idx = int(item_id.split("-", 1)[1])
+            _, genre = _GENRE_OPTIONS[idx]
+            self.dismiss(genre if genre is not None else "")
+        else:
+            self.dismiss(None)
+
+    def action_dismiss_none(self) -> None:
+        self.dismiss(None)
 
 
 class ChangeNeighbourhoodScreen(ModalScreen[str | None]):
@@ -226,13 +313,15 @@ class SearchScreen(Screen):
         Binding("/,s", "focus_search", "Search"),
         Binding("h", "go_home", "Home"),
         Binding("n", "change_neighbourhood", "Neighbourhood"),
+        Binding("g", "filter_genre", "Genre"),
     ]
 
     def __init__(self, home_neighbourhood: str | None = None) -> None:
         super().__init__()
         self._home_neighbourhood = home_neighbourhood
         self._results: list[dict] = []
-        self._auto_timeframe: str | None = None  # set while doing adaptive home fetch
+        self._auto_timeframe: str | None = None
+        self._genre_filter: str | None = None
 
     def compose(self) -> ComposeResult:
         yield Input(
@@ -246,10 +335,11 @@ class SearchScreen(Screen):
         yield Footer()
 
     def _header_text(self, label: str = "", count: int = 0) -> str:
+        genre_tag = f"  ·  {self._genre_filter}" if self._genre_filter else ""
         if label and count:
-            return f"  {label}  ·  {count} result{'s' if count != 1 else ''}  ·  [underline]live[/underline]"
+            return f"  {label}{genre_tag}  ·  {count} result{'s' if count != 1 else ''}  ·  [underline]live[/underline]"
         loc = f"home: {self._home_neighbourhood}" if self._home_neighbourhood else "hyper-local live music"
-        return f"  whereabout  ·  {loc}"
+        return f"  whereabout  ·  {loc}{genre_tag}"
 
     def on_mount(self) -> None:
         self.query_one("#loading", LoadingIndicator).display = False
@@ -273,7 +363,7 @@ class SearchScreen(Screen):
         inp.focus()
         self.query_one("#empty-label", Static).display = False
         self.query_one("#loading", LoadingIndicator).display = True
-        self._fetch(query, auto=True)
+        self._fetch(query, auto=True, genre_filter=self._genre_filter)
 
     def check_action(self, action: str, parameters: tuple) -> bool | None:
         if action == "change_neighbourhood":
@@ -312,6 +402,26 @@ class SearchScreen(Screen):
 
         self.app.push_screen(ChangeNeighbourhoodScreen(self._home_neighbourhood), handle_result)
 
+    def action_filter_genre(self) -> None:
+        def handle_result(result: str | None) -> None:
+            if result is None:
+                return  # cancelled
+            new_filter = result or None  # "" = All genres → clear
+            if new_filter == self._genre_filter:
+                return
+            self._genre_filter = new_filter
+            self.query_one("#query-header", Static).update(self._header_text())
+            text = self.query_one("#search-input", Input).value.strip()
+            if text:
+                self.query_one("#loading", LoadingIndicator).display = True
+                self.query_one("#results-table", DataTable).display = False
+                self.query_one("#empty-label", Static).display = False
+                self._fetch(text, genre_filter=self._genre_filter)
+            elif self._home_neighbourhood:
+                self._start_auto_fetch()
+
+        self.app.push_screen(GenreFilterScreen(self._genre_filter), handle_result)
+
     @on(Input.Submitted)
     def handle_search(self, event: Input.Submitted) -> None:
         text = event.value.strip()
@@ -321,15 +431,15 @@ class SearchScreen(Screen):
         self.query_one("#loading", LoadingIndicator).display = True
         self.query_one("#results-table", DataTable).display = False
         self.query_one("#empty-label", Static).display = False
-        self._fetch(text)
+        self._fetch(text, genre_filter=self._genre_filter)
 
     @work(thread=True)
-    def _fetch(self, text: str, auto: bool = False) -> None:
+    def _fetch(self, text: str, auto: bool = False, genre_filter: str | None = None) -> None:
         results: list[dict] = []
         label = ""
         source = ""
         try:
-            results, label, source = _run_query(text, self._home_neighbourhood)
+            results, label, source = _run_query(text, self._home_neighbourhood, genre_filter)
         except Exception:
             pass
         self.app.call_from_thread(self._show_results, results, label, source, auto)
@@ -397,7 +507,7 @@ class WhereaboutApp(App):
         self.push_screen(SearchScreen(self._home_neighbourhood))
 
 
-def _run_query(text: str, home_neighbourhood: str | None) -> tuple[list[dict], str, str]:
+def _run_query(text: str, home_neighbourhood: str | None, genre_filter: str | None = None) -> tuple[list[dict], str, str]:
     from whereabout.query import parser, ranker
     from whereabout.config import UserConfig
 
@@ -406,6 +516,8 @@ def _run_query(text: str, home_neighbourhood: str | None) -> tuple[list[dict], s
     effective = q.neighbourhood or home_neighbourhood or cfg.home_neighbourhood
     if effective:
         q = q.model_copy(update={"neighbourhood": effective})
+    if genre_filter:
+        q = q.model_copy(update={"genres": [genre_filter]})
 
     results = ranker.rank(q)
 
