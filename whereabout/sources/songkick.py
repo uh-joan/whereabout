@@ -22,8 +22,13 @@ _ARTIST_SPLIT_RE = re.compile(r",\s*(?:and\s+)?|\s+and\s+")
 def _load_known_venue_postcodes() -> dict[str, str]:
     import json
     from importlib.resources import files
-    data = json.loads(files("whereabout.data").joinpath("venues.json").read_text())
-    return {v["name"]: v["postcode"] for v in data}
+    pkg = files("whereabout.data")
+    result: dict[str, str] = {}
+    for fname in ("venues.json", "songkick_venues.json"):
+        for v in json.loads(pkg.joinpath(fname).read_text()):
+            if v.get("postcode"):
+                result[v["name"]] = v["postcode"]
+    return result
 
 _KNOWN_VENUE_POSTCODES = _load_known_venue_postcodes()
 
