@@ -202,6 +202,7 @@ class SearchScreen(Screen):
     BINDINGS = [
         Binding("ctrl+c", "app.quit", "Quit"),
         Binding("/,s", "focus_search", "Search"),
+        Binding("h", "go_home", "Home"),
         Binding("n", "change_neighbourhood", "Neighbourhood"),
     ]
 
@@ -255,7 +256,18 @@ class SearchScreen(Screen):
     def check_action(self, action: str, parameters: tuple) -> bool | None:
         if action == "change_neighbourhood":
             return bool(self._results)
+        if action == "go_home":
+            return bool(self._home_neighbourhood)
         return True
+
+    def action_go_home(self) -> None:
+        if not self._home_neighbourhood:
+            return
+        self.query_one("#results-table", DataTable).display = False
+        self.query_one("#empty-label", Static).display = False
+        self.query_one("#query-header", Static).update(self._header_text())
+        self.query_one("#loading", LoadingIndicator).display = True
+        self._start_auto_fetch()
 
     def action_focus_search(self) -> None:
         inp = self.query_one("#search-input", Input)
