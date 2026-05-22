@@ -1,9 +1,13 @@
 from __future__ import annotations
+import sys
+from pathlib import Path
 import typer
 
 app = typer.Typer(help="Hyper-local live music discovery")
 config_app = typer.Typer(help="Manage whereabout configuration")
+schedule_app = typer.Typer(help="Manage background refresh schedule")
 app.add_typer(config_app, name="config")
+app.add_typer(schedule_app, name="schedule")
 
 
 @app.callback(invoke_without_command=True)
@@ -274,6 +278,100 @@ def session_cmd(
     else:
         from whereabout.session import run_session
         run_session(home_neighbourhood=cfg.home_neighbourhood)
+
+
+_PLIST_LABEL = "com.whereabout.refresh"
+_PLIST_PATH = Path.home() / "Library" / "LaunchAgents" / f"{_PLIST_LABEL}.plist"
+
+
+def _plist_content(binary: str, interval: int, log_dir: Path) -> str:
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>{_PLIST_LABEL}</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>{binary}</string>
+        <string>refresh</string>
+        <string>--browser</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>{interval}</integer>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>{log_dir / "refresh.log"}</string>
+    <key>StandardErrorPath</key>
+    <string>{log_dir / "refresh.err"}</string>
+</dict>
+</plist>
+"""
+
+
+@schedule_app.command("install")
+def schedule_install(
+    interval_hours: int = typer.Option(6, "--interval-hours", help="Refresh interval in hours"),
+) -> None:
+    """Install a launchd agent to run browser refresh on a schedule (macOS only)."""
+    import subprocess
+
+    binary = Path(sys.executable).parent / "whereabout"
+    if not binary.exists():
+        typer.echo(f"Could not find whereabout binary at {binary}", err=True)
+        raise typer.Exit(1)
+    binary = str(binary)
+
+    log_dir = Path.home() / ".local" / "share" / "whereabout" / "logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
+
+    _PLIST_PATH.parent.mkdir(parents=True, exist_ok=True)
+    _PLIST_PATH.write_text(_plist_content(binary, interval_hours * 3600, log_dir))
+
+    # Unload first in case it's already loaded
+    subprocess.run(["launchctl", "unload", str(_PLIST_PATH)], capture_output=True)
+    result = subprocess.run(["launchctl", "load", str(_PLIST_PATH)], capture_output=True, text=True)
+    if result.returncode != 0:
+        typer.echo(f"launchctl load failed: {result.stderr.strip()}", err=True)
+        raise typer.Exit(1)
+
+    typer.echo(f"Installed: refresh every {interval_hours}h")
+    typer.echo(f"Plist:     {_PLIST_PATH}")
+    typer.echo(f"Logs:      {log_dir}/refresh.log")
+    typer.echo(f"Errors:    {log_dir}/refresh.err")
+    typer.echo("\nTo uninstall: whereabout schedule uninstall")
+
+
+@schedule_app.command("uninstall")
+def schedule_uninstall() -> None:
+    """Remove the launchd refresh agent."""
+    import subprocess
+
+    if not _PLIST_PATH.exists():
+        typer.echo("No schedule installed.")
+        return
+    subprocess.run(["launchctl", "unload", str(_PLIST_PATH)], capture_output=True)
+    _PLIST_PATH.unlink()
+    typer.echo("Schedule removed.")
+
+
+@schedule_app.command("status")
+def schedule_status() -> None:
+    """Show whether the refresh schedule is active."""
+    import subprocess
+
+    if not _PLIST_PATH.exists():
+        typer.echo("Not installed. Run: whereabout schedule install")
+        return
+    result = subprocess.run(
+        ["launchctl", "list", _PLIST_LABEL], capture_output=True, text=True
+    )
+    if result.returncode == 0:
+        typer.echo(f"Active — {_PLIST_PATH}")
+        typer.echo(result.stdout.strip())
+    else:
+        typer.echo(f"Plist exists but agent not loaded: {_PLIST_PATH}")
 
 
 @app.command("doctor")
