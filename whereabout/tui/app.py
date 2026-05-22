@@ -186,6 +186,18 @@ class DetailScreen(Screen):
         )
 
 
+_HOME_MIN_RESULTS = 5
+_HOME_RESULT_CAP = 15
+_EXPAND_TO = {"tonight": "this week", "this weekend": None, "this week": None}
+
+
+def _default_timeframe() -> str:
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    day = datetime.now(ZoneInfo("Europe/London")).weekday()
+    return "this weekend" if day in (4, 5) else "tonight"
+
+
 class SearchScreen(Screen):
     BINDINGS = [
         Binding("ctrl+c", "app.quit", "Quit"),
@@ -197,6 +209,7 @@ class SearchScreen(Screen):
         super().__init__()
         self._home_neighbourhood = home_neighbourhood
         self._results: list[dict] = []
+        self._auto_timeframe: str | None = None  # set while doing adaptive home fetch
 
     def compose(self) -> ComposeResult:
         yield Input(
@@ -224,14 +237,20 @@ class SearchScreen(Screen):
 
         inp = self.query_one("#search-input", Input)
         if self._home_neighbourhood:
-            default_query = f"events in {self._home_neighbourhood}"
-            inp.value = default_query
-            inp.focus()
-            self.query_one("#empty-label", Static).display = False
-            self.query_one("#loading", LoadingIndicator).display = True
-            self._fetch(default_query)
+            self._start_auto_fetch()
         else:
             inp.focus()
+
+    def _start_auto_fetch(self, timeframe: str | None = None) -> None:
+        timeframe = timeframe or _default_timeframe()
+        self._auto_timeframe = timeframe
+        query = f"events in {self._home_neighbourhood} {timeframe}"
+        inp = self.query_one("#search-input", Input)
+        inp.value = query
+        inp.focus()
+        self.query_one("#empty-label", Static).display = False
+        self.query_one("#loading", LoadingIndicator).display = True
+        self._fetch(query, auto=True)
 
     def check_action(self, action: str, parameters: tuple) -> bool | None:
         if action == "change_neighbourhood":
@@ -252,14 +271,10 @@ class SearchScreen(Screen):
             cfg.home_neighbourhood = resolved
             cfg.save()
             self._home_neighbourhood = resolved
-            query = f"events in {resolved}"
-            inp = self.query_one("#search-input", Input)
-            inp.value = query
-            self.query_one("#loading", LoadingIndicator).display = True
             self.query_one("#results-table", DataTable).display = False
             self.query_one("#empty-label", Static).display = False
             self.query_one("#query-header", Static).update(self._header_text())
-            self._fetch(query)
+            self._start_auto_fetch()
 
         self.app.push_screen(ChangeNeighbourhoodScreen(self._home_neighbourhood), handle_result)
 
@@ -268,13 +283,14 @@ class SearchScreen(Screen):
         text = event.value.strip()
         if not text:
             return
+        self._auto_timeframe = None  # manual search — disable adaptive logic
         self.query_one("#loading", LoadingIndicator).display = True
         self.query_one("#results-table", DataTable).display = False
         self.query_one("#empty-label", Static).display = False
         self._fetch(text)
 
     @work(thread=True)
-    def _fetch(self, text: str) -> None:
+    def _fetch(self, text: str, auto: bool = False) -> None:
         results: list[dict] = []
         label = ""
         source = ""
@@ -282,17 +298,27 @@ class SearchScreen(Screen):
             results, label, source = _run_query(text, self._home_neighbourhood)
         except Exception:
             pass
-        self.app.call_from_thread(self._show_results, results, label, source)
+        self.app.call_from_thread(self._show_results, results, label, source, auto)
 
-    def _show_results(self, results: list[dict], label: str, source: str) -> None:
+    def _show_results(
+        self, results: list[dict], label: str, source: str, auto: bool = False
+    ) -> None:
+        # Auto home fetch: expand window if too few results
+        if auto and len(results) < _HOME_MIN_RESULTS and self._auto_timeframe:
+            next_tf = _EXPAND_TO.get(self._auto_timeframe)
+            if next_tf:
+                self._start_auto_fetch(next_tf)
+                return
+
+        display_results = results[:_HOME_RESULT_CAP] if auto else results
+        self._results = display_results
+
         self.query_one("#loading", LoadingIndicator).display = False
-        self._results = results
-
         header = self.query_one("#query-header", Static)
         table = self.query_one("#results-table", DataTable)
         table.clear()
 
-        if not results:
+        if not display_results:
             header.update(self._header_text())
             self.query_one("#empty-label", Static).update(
                 "No events found. Try a different query or neighbourhood."
@@ -301,8 +327,8 @@ class SearchScreen(Screen):
             self.refresh_bindings()
             return
 
-        header.update(self._header_text(label, len(results), source))
-        for r in results:
+        header.update(self._header_text(label, len(display_results), source))
+        for r in display_results:
             artists_str = ", ".join(r["artists"]) if r["artists"] else r["title"]
             table.add_row(
                 str(r["index"]),

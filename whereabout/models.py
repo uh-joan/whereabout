@@ -84,4 +84,4 @@ class Query(BaseModel):
     neighbourhood: str | None = None
     date_range_start_utc: datetime
     date_range_end_utc: datetime
-    limit: int = 10
+    limit: int = 50
