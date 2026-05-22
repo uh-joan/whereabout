@@ -165,12 +165,19 @@ class DetailScreen(Screen):
     @work(thread=True)
     def _load_enrichments(self) -> None:
         from whereabout.query.enrich import enrich_artist
+        genres = self._result.get("genres", [])
+        artists = self._result.get("artists", []) or []
+
+        # If no artists listed, try extracting from the event title
+        if not artists:
+            extracted = _extract_artist_from_title(self._result.get("title", ""))
+            if extracted:
+                artists = [extracted]
+
         enrichments = {}
-        for artist in self._result.get("artists", []):
+        for artist in artists:
             try:
-                enrichments[artist] = enrich_artist(
-                    artist, context_genres=self._result.get("genres", [])
-                )
+                enrichments[artist] = enrich_artist(artist, context_genres=genres)
             except Exception as e:
                 enrichments[artist] = {
                     "bio": f"(unavailable: {e})",
@@ -184,6 +191,21 @@ class DetailScreen(Screen):
         self.query_one("#detail-md", Markdown).update(
             detail_view.render_markdown(self._result, enrichments)
         )
+
+
+import re as _re
+_PAREN_SUFFIX_RE = _re.compile(r"\s*[\(\[].*?[\)\]]\s*$", _re.IGNORECASE)
+_GENERIC_TITLE_WORDS = {"£", "$", "cocktail", "presents", "session", "residency", "free entry", "feat"}
+
+
+def _extract_artist_from_title(title: str) -> str | None:
+    clean = _PAREN_SUFFIX_RE.sub("", title).strip()
+    lower = clean.lower()
+    if any(ind in lower for ind in _GENERIC_TITLE_WORDS):
+        return None
+    if len(clean.split()) > 4:
+        return None
+    return clean or None
 
 
 _HOME_MIN_RESULTS = 5

@@ -33,5 +33,7 @@ def render_markdown(result: dict, enrichments: dict[str, dict]) -> str:
                 if links.get("website"):
                     link_parts.append(f"[Website]({links['website']})")
                 lines.append("  ".join(link_parts))
+    else:
+        lines.append("\n---\n*No artist info available for this event.*")
 
     return "\n".join(lines)
