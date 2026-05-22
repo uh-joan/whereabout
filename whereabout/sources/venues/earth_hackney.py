@@ -35,6 +35,7 @@ def _parse_show_time(time_el) -> tuple[int, int]:
 
 class EartHHackneySource(BaseSource):
     source_id = "venue_earth_hackney"
+    freshness_seconds = 2 * 3600
 
     async def fetch(self, query: Query) -> list[RawEvent]:
         return await asyncio.to_thread(self._fetch_sync, query)

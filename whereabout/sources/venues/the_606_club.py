@@ -34,6 +34,7 @@ def _parse_banner_date(text: str) -> datetime:
 
 class The606ClubSource(BaseSource):
     source_id = "venue_606_club"
+    freshness_seconds = 2 * 3600
 
     async def fetch(self, query: Query) -> list[RawEvent]:
         return await asyncio.to_thread(self._fetch_sync, query)

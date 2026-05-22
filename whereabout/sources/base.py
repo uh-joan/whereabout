@@ -6,6 +6,7 @@ from whereabout.models import RawEvent, Query
 class BaseSource(ABC):
     source_id: str
     live: bool = True
+    freshness_seconds: int = 6 * 3600
 
     @abstractmethod
     async def fetch(self, query: Query) -> list[RawEvent]:

@@ -19,6 +19,7 @@ _HEADERS = {"User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout"}
 
 class BrixtonJammSource(BaseSource):
     source_id = "venue_brixton_jamm"
+    freshness_seconds = 2 * 3600
 
     async def fetch(self, query: Query) -> list[RawEvent]:
         return await asyncio.to_thread(self._fetch_sync, query)

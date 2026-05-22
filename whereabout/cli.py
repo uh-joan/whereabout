@@ -145,6 +145,7 @@ def query_cmd(
     text: str = typer.Argument(..., help="Natural language query, e.g. 'jazz in brixton'"),
     fmt: str = typer.Option("markdown", "--format", help="Output format: markdown or json"),
     limit: int = typer.Option(10, "--limit"),
+    force_refresh: bool = typer.Option(False, "--refresh", "-r", help="Bypass cache and re-fetch all sources"),
 ) -> None:
     """Search for live music events."""
     import re
@@ -190,7 +191,7 @@ def query_cmd(
     query_label = f"{genre_label} in {neighbourhood_label} — {date_label}"
 
     try:
-        results = ranker.rank(q)
+        results = ranker.rank(q, force=force_refresh)
     except Exception as e:
         typer.echo(f"Fetch error: {e}", err=True)
         raise typer.Exit(1)

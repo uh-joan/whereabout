@@ -31,6 +31,7 @@ def _parse_oslo_date(text: str) -> datetime:
 
 class OsloHackneySource(BaseSource):
     source_id = "venue_oslo_hackney"
+    freshness_seconds = 2 * 3600
 
     async def fetch(self, query: Query) -> list[RawEvent]:
         return await asyncio.to_thread(self._fetch_sync, query)
