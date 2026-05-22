@@ -47,7 +47,7 @@
   {
     "name": "Shoreditch",
     "borough": "Hackney",
-    "postcode_prefixes": ["EC2A", "E1"],
+    "postcode_prefixes": ["EC2A", "E1", "EC1V"],
     "lat": 51.5227,
     "lng": -0.0792,
     "aliases": ["shoreditch high street", "old street"],
@@ -83,7 +83,7 @@
   {
     "name": "Soho",
     "borough": "Westminster",
-    "postcode_prefixes": ["W1D", "W1F"],
+    "postcode_prefixes": ["W1D", "W1F", "W1B"],
     "lat": 51.5137,
     "lng": -0.1337,
     "aliases": ["ronnie scotts", "carnaby", "west end"],
@@ -185,8 +185,8 @@
     "postcode_prefixes": ["SE8"],
     "lat": 51.4780,
     "lng": -0.0248,
-    "aliases": ["deptford bridge", "new cross"],
-    "ward_aliases": ["Deptford", "New Cross"]
+    "aliases": ["deptford bridge"],
+    "ward_aliases": ["Deptford"]
   },
   {
     "name": "Finsbury Park",
@@ -385,5 +385,59 @@
     "lng": -0.0985,
     "aliases": ["arsenal", "highbury and islington", "canonbury"],
     "ward_aliases": ["Highbury East", "Highbury West", "Canonbury"]
+  },
+  {
+    "name": "Chelsea",
+    "borough": "Kensington and Chelsea",
+    "postcode_prefixes": ["SW10", "SW3"],
+    "lat": 51.4832,
+    "lng": -0.1696,
+    "aliases": ["world's end", "chelsea harbour", "fulham road"],
+    "ward_aliases": ["Cremorne", "Chelsea Riverside"]
+  },
+  {
+    "name": "New Cross",
+    "borough": "Lewisham",
+    "postcode_prefixes": ["SE14"],
+    "lat": 51.4780,
+    "lng": -0.0420,
+    "aliases": ["new cross gate", "telegraph hill", "brockley"],
+    "ward_aliases": ["New Cross", "Telegraph Hill"]
+  },
+  {
+    "name": "Canning Town",
+    "borough": "Newham",
+    "postcode_prefixes": ["E16"],
+    "lat": 51.5141,
+    "lng": 0.0057,
+    "aliases": ["custom house", "royal docks", "silvertown"],
+    "ward_aliases": ["Canning Town North", "Canning Town South"]
+  },
+  {
+    "name": "Holloway",
+    "borough": "Islington",
+    "postcode_prefixes": ["N7"],
+    "lat": 51.5567,
+    "lng": -0.1165,
+    "aliases": ["lower holloway", "caledonian road", "tufnell park"],
+    "ward_aliases": ["Holloway", "Junction"]
+  },
+  {
+    "name": "Herne Hill",
+    "borough": "Lambeth",
+    "postcode_prefixes": ["SE24"],
+    "lat": 51.4536,
+    "lng": -0.1015,
+    "aliases": ["tulse hill", "brockwell park", "dulwich road"],
+    "ward_aliases": ["Herne Hill", "Tulse Hill"]
+  },
+  {
+    "name": "Covent Garden",
+    "borough": "Westminster",
+    "postcode_prefixes": ["WC2H", "WC2E", "WC2R"],
+    "lat": 51.5117,
+    "lng": -0.1240,
+    "aliases": ["seven dials", "strand", "leicester square"],
+    "ward_aliases": ["St James's", "West End"]
   }
 ]
