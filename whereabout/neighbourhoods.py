@@ -63,3 +63,19 @@ def did_you_mean(name: str, n: int = 3) -> list[str]:
 
 def list_all() -> list[str]:
     return list(_ALL_NAMES)
+
+
+def nearby_neighbourhoods(name: str, max_count: int = 4) -> list[str]:
+    """Return up to max_count nearest neighbourhood names by centroid distance."""
+    import math
+    target = next((n for n in _NEIGHBOURHOODS if n["name"] == name), None)
+    if not target:
+        return []
+    distances = []
+    for n in _NEIGHBOURHOODS:
+        if n["name"] == name or not n.get("postcode_prefixes"):
+            continue
+        d = math.sqrt((n["lat"] - target["lat"]) ** 2 + (n["lng"] - target["lng"]) ** 2)
+        distances.append((d, n["name"]))
+    distances.sort()
+    return [name for _, name in distances[:max_count]]

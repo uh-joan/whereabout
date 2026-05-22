@@ -366,8 +366,6 @@ class SearchScreen(Screen):
         self._fetch(query, auto=True, genre_filter=self._genre_filter)
 
     def check_action(self, action: str, parameters: tuple) -> bool | None:
-        if action == "change_neighbourhood":
-            return bool(self._results)
         if action == "go_home":
             return bool(self._home_neighbourhood)
         return True
@@ -465,8 +463,9 @@ class SearchScreen(Screen):
         if not display_results:
             header.update(self._header_text())
             header.tooltip = None
+            home_hint = "  Press [bold]h[/bold] to go home." if self._home_neighbourhood else ""
             self.query_one("#empty-label", Static).update(
-                "No events found. Try a different query or neighbourhood."
+                f"No events found. Try a different query or neighbourhood.{home_hint}"
             )
             self.query_one("#empty-label", Static).display = True
             self.refresh_bindings()
@@ -521,7 +520,19 @@ def _run_query(text: str, home_neighbourhood: str | None, genre_filter: str | No
 
     results = ranker.rank(q)
 
-    neighbourhood_label = effective or "London"
+    # Nearby fallback: if no results for a specific neighbourhood, try nearest ones
+    nearby_label: str | None = None
+    if not results and effective:
+        from whereabout import neighbourhoods as nb
+        for nearby in nb.nearby_neighbourhoods(effective, max_count=4):
+            nearby_q = q.model_copy(update={"neighbourhood": nearby})
+            nearby_results = ranker.rank(nearby_q)
+            if nearby_results:
+                results = nearby_results
+                nearby_label = nearby
+                break
+
+    neighbourhood_label = nearby_label or effective or "London"
     genre_label = "/".join(q.genres) if q.genres else "all genres"
     delta_days = max(1, (q.date_range_end_utc - q.date_range_start_utc).days)
     if delta_days == 1:
@@ -534,7 +545,10 @@ def _run_query(text: str, home_neighbourhood: str | None, genre_filter: str | No
         date_label = "this week"
     else:
         date_label = f"next {delta_days} days"
-    query_label = f"{genre_label} in {neighbourhood_label} — {date_label}"
+    if nearby_label:
+        query_label = f"{genre_label} near {effective} ({nearby_label}) — {date_label}"
+    else:
+        query_label = f"{genre_label} in {neighbourhood_label} — {date_label}"
 
     sources = sorted({r["source"] for r in results}) if results else []
     source_note = (
