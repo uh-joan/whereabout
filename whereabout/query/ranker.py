@@ -60,8 +60,9 @@ async def _fetch_all(query: Query) -> list[RawEvent]:
     returns an empty list (caller should read from KB instead).
     """
     from whereabout.sources.venues import ALL_VENUE_SOURCES
+    from whereabout.sources.songkick import SongkickSource
     date_key = _date_key(query)
-    all_sources = [DICESource(), RASource()] + ALL_VENUE_SOURCES
+    all_sources = [DICESource(), RASource(), SongkickSource()] + ALL_VENUE_SOURCES
     stale = [s for s in all_sources if getattr(s, "live", True) and _is_stale(s.source_id, date_key)]
     if not stale:
         return []
