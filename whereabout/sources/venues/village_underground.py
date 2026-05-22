@@ -8,11 +8,12 @@ from bs4 import BeautifulSoup
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
-from whereabout.sources.venues._utils import venue_event_id
+from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
-_URL = "https://villageunderground.co.uk/events/"
-_POSTCODE = "EC2A 3PQ"
-_VENUE = "Village Underground"
+_CFG = load_venue_config("venue_village_underground")
+_URL = _CFG["url"]
+_POSTCODE = _CFG["postcode"]
+_VENUE = _CFG["name"]
 _LONDON_TZ = ZoneInfo("Europe/London")
 _HEADERS = {
     "User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout",
@@ -61,7 +62,7 @@ class VillageUndergroundSource(BaseSource):
                     date_start_utc=dt_utc,
                     venue_name=_VENUE,
                     venue_postcode=_POSTCODE,
-                    genres_raw=["electronic", "indie"],
+                    genres_raw=_CFG["genres"],
                     ticket_url=source_url,
                     raw_payload={},
                 ))

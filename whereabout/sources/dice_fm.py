@@ -13,7 +13,8 @@ SNAPSHOT_DIR = Path.home() / ".cache" / "whereabout" / "source-snapshots" / "dic
 CACHE_TTL_SECONDS = 300  # 5 minutes
 
 # Public API key embedded in the DICE web app
-_API_KEY = "DICE_KEY_REDACTED"
+import os
+_API_KEY = os.environ.get("DICE_API_KEY", "DICE_KEY_REDACTED")
 
 # DICE city IDs for UK cities
 _CITY_IDS = {

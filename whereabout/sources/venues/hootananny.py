@@ -9,11 +9,13 @@ from bs4 import BeautifulSoup
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
-from whereabout.sources.venues._utils import venue_event_id
+from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
-_URL = "https://hootanannybrixton.co.uk/"
-_POSTCODE = "SW2 1DF"
-_VENUE = "Hootananny Brixton"
+_CFG = load_venue_config("venue_hootananny")
+_URL = _CFG["url"]
+_POSTCODE = _CFG["postcode"]
+_VENUE = _CFG["name"]
+_DEFAULT_HOUR, _DEFAULT_MIN = map(int, _CFG["default_time"].split(":"))
 _LONDON_TZ = ZoneInfo("Europe/London")
 _HEADERS = {"User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout"}
 _TITLE_RE = re.compile(r"More Info on (.+?) Hootananny", re.IGNORECASE)
@@ -55,7 +57,7 @@ class HootanannySource(BaseSource):
                 month_name = month_div.get_text(strip=True)
                 year = month_str.split()[-1] if month_str.split() else ""
                 naive = datetime.strptime(f"{day} {month_name} {year}", "%d %b %Y")
-                local = naive.replace(hour=20, tzinfo=_LONDON_TZ)
+                local = naive.replace(hour=_DEFAULT_HOUR, minute=_DEFAULT_MIN, tzinfo=_LONDON_TZ)
                 dt_utc = local.astimezone(timezone.utc)
                 if not (query.date_range_start_utc <= dt_utc <= query.date_range_end_utc):
                     continue

@@ -138,21 +138,19 @@ GenreFilterScreen {
 """
 
 
-_GENRE_OPTIONS: list[tuple[str, str | None]] = [
-    ("All genres", None),
-    ("Jazz", "jazz"),
-    ("Electronic", "electronic"),
-    ("Hip-Hop", "hip-hop"),
-    ("R&B", "r&b"),
-    ("Soul", "soul"),
-    ("Funk", "funk"),
-    ("Blues", "blues"),
-    ("Reggae", "reggae"),
-    ("Afrobeats", "afrobeats"),
-    ("Drum & Bass", "drum & bass"),
-    ("House", "house"),
-    ("Disco", "disco"),
-]
+def _build_genre_options() -> list[tuple[str, str | None]]:
+    import json
+    from pathlib import Path
+    order = json.loads(
+        (Path(__file__).parent.parent / "data" / "genre_order.json").read_text()
+    )
+    opts: list[tuple[str, str | None]] = [("All genres", None)]
+    for g in order:
+        opts.append((g.title(), g))
+    return opts
+
+
+_GENRE_OPTIONS = _build_genre_options()
 
 
 class GenreFilterScreen(ModalScreen[str | None]):

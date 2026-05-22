@@ -8,11 +8,13 @@ from bs4 import BeautifulSoup
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
-from whereabout.sources.venues._utils import venue_event_id
+from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
-_URL = "https://vortexjazz.co.uk/events/"
-_POSTCODE = "N16 8JH"
-_VENUE = "Vortex Jazz Club"
+_CFG = load_venue_config("venue_vortex_jazz")
+_URL = _CFG["url"]
+_POSTCODE = _CFG["postcode"]
+_VENUE = _CFG["name"]
+_DEFAULT_HOUR, _DEFAULT_MIN = map(int, _CFG["default_time"].split(":"))
 _LONDON_TZ = ZoneInfo("Europe/London")
 _HEADERS = {"User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout"}
 
@@ -40,7 +42,7 @@ class VortexJazzSource(BaseSource):
                 try:
                     current_date = datetime.strptime(
                         el.get_text(strip=True), "%a %d %B %Y"
-                    ).replace(hour=19, minute=30, tzinfo=_LONDON_TZ).astimezone(timezone.utc)
+                    ).replace(hour=_DEFAULT_HOUR, minute=_DEFAULT_MIN, tzinfo=_LONDON_TZ).astimezone(timezone.utc)
                 except ValueError:
                     current_date = None
                 continue
@@ -64,7 +66,7 @@ class VortexJazzSource(BaseSource):
                 date_start_utc=current_date,
                 venue_name=_VENUE,
                 venue_postcode=_POSTCODE,
-                genres_raw=["jazz"],
+                genres_raw=_CFG["genres"],
                 ticket_url=event_url,
                 raw_payload={},
             ))

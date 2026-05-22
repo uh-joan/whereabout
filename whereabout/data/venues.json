@@ -1,0 +1,106 @@
+[
+  {
+    "source_id": "venue_brilliant_corners",
+    "name": "Brilliant Corners",
+    "postcode": "E8 4AE",
+    "url": "https://brilliantcornerslondon.co.uk/dates/",
+    "default_time": "20:00",
+    "genres": ["jazz"]
+  },
+  {
+    "source_id": "venue_brixton_jamm",
+    "name": "Brixton Jamm",
+    "postcode": "SW9 8JP",
+    "url": "https://www.brixtonjamm.org/allevents",
+    "default_time": "20:00",
+    "genres": ["electronic", "indie"]
+  },
+  {
+    "source_id": "venue_cafe_oto",
+    "name": "Cafe OTO",
+    "postcode": "E8 3DL",
+    "url": "https://cafeoto.co.uk/events/",
+    "default_time": "19:00",
+    "genres": ["experimental", "jazz"]
+  },
+  {
+    "source_id": "venue_corsica_studios",
+    "name": "Corsica Studios",
+    "postcode": "SE17 1LB",
+    "url": "https://www.corsicastudios.com/events/",
+    "default_time": "20:00",
+    "genres": ["electronic"]
+  },
+  {
+    "source_id": "venue_earth_hackney",
+    "name": "EartH Hackney",
+    "postcode": "E8 3BH",
+    "url": "https://earthackney.co.uk/events/",
+    "default_time": "20:00",
+    "genres": ["electronic", "indie", "world"]
+  },
+  {
+    "source_id": "venue_electric_brixton",
+    "name": "Electric Brixton",
+    "postcode": "SW2 1RJ",
+    "url": "https://www.electricbrixton.uk.com/events",
+    "default_time": "20:00",
+    "genres": ["electronic"]
+  },
+  {
+    "source_id": "venue_hootananny",
+    "name": "Hootananny Brixton",
+    "postcode": "SW2 1DF",
+    "url": "https://hootanannybrixton.co.uk/",
+    "default_time": "20:00",
+    "genres": []
+  },
+  {
+    "source_id": "venue_jazz_cafe",
+    "name": "Jazz Cafe",
+    "postcode": "NW1 7PG",
+    "url": "https://thejazzcafe.com/whats-on",
+    "default_time": "20:00",
+    "genres": ["jazz", "soul"]
+  },
+  {
+    "source_id": "venue_oslo_hackney",
+    "name": "Oslo Hackney",
+    "postcode": "E8 2LX",
+    "url": "https://www.oslohackney.com/events/",
+    "default_time": "20:00",
+    "genres": ["electronic", "indie"]
+  },
+  {
+    "source_id": "venue_ronnie_scotts",
+    "name": "Ronnie Scott's",
+    "postcode": "W1D 4HT",
+    "url": "https://www.ronniescotts.co.uk/find-a-show",
+    "default_time": "19:30",
+    "genres": ["jazz"]
+  },
+  {
+    "source_id": "venue_606_club",
+    "name": "606 Club",
+    "postcode": "SW10 0QD",
+    "url": "https://www.606club.co.uk/events/",
+    "default_time": "20:00",
+    "genres": ["jazz"]
+  },
+  {
+    "source_id": "venue_village_underground",
+    "name": "Village Underground",
+    "postcode": "EC2A 3PQ",
+    "url": "https://villageunderground.co.uk/events/",
+    "default_time": "20:00",
+    "genres": ["electronic", "indie"]
+  },
+  {
+    "source_id": "venue_vortex_jazz",
+    "name": "Vortex Jazz Club",
+    "postcode": "N16 8JH",
+    "url": "https://vortexjazz.co.uk/events/",
+    "default_time": "19:30",
+    "genres": ["jazz"]
+  }
+]

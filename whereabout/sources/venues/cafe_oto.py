@@ -9,11 +9,12 @@ from bs4 import BeautifulSoup
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
-from whereabout.sources.venues._utils import venue_event_id
+from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
-_URL = "https://cafeoto.co.uk/events/"
-_POSTCODE = "E8 3DL"
-_VENUE = "Cafe OTO"
+_CFG = load_venue_config("venue_cafe_oto")
+_URL = _CFG["url"]
+_POSTCODE = _CFG["postcode"]
+_VENUE = _CFG["name"]
 _LONDON_TZ = ZoneInfo("Europe/London")
 _HEADERS = {"User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout"}
 # "Friday 22 May 2026, 7.30pm"
@@ -74,7 +75,7 @@ class CafeOtoSource(BaseSource):
                 date_start_utc=dt,
                 venue_name=_VENUE,
                 venue_postcode=_POSTCODE,
-                genres_raw=["experimental", "jazz"],
+                genres_raw=_CFG["genres"],
                 ticket_url=event_url,
                 raw_payload={},
             ))

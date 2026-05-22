@@ -19,33 +19,13 @@ _MAX_PAGES = 10
 _ARTIST_SPLIT_RE = re.compile(r",\s*(?:and\s+)?|\s+and\s+")
 
 # Well-known London venues whose Songkick city label is generic "London"
-_KNOWN_VENUE_POSTCODES: dict[str, str] = {
-    "Electric Ballroom": "NW1 8QP",
-    "KOKO": "NW1 7PH",
-    "Roundhouse": "NW1 8EH",
-    "The Jazz Cafe": "NW1 7PG",
-    "O2 Forum Kentish Town": "NW5 2LZ",
-    "Union Chapel": "N1 2UN",
-    "The Garage": "N5 1PL",
-    "fabric": "EC1A 9PY",
-    "Fabric": "EC1A 9PY",
-    "Barbican Hall": "EC2Y 8DS",
-    "Barbican": "EC2Y 8DS",
-    "Ministry of Sound": "SE1 6DP",
-    "Royal Festival Hall - Southbank Centre": "SE1 8XX",
-    "Southbank Centre": "SE1 8XX",
-    "HERE at Outernet": "WC2H 8LH",
-    "London Palladium": "W1F 8LT",
-    "The Dome": "N19 4QX",
-    "The Dukes of Highgate": "N6 5HX",
-    "indigo at The O2": "SE10 0DX",
-    "Royal Albert Hall": "SW7 2AP",
-    "Signature Brew Blackhorse Road": "E17 6PN",
-    "EartH": "E9 6JX",
-    "EartH Hackney": "E9 6JX",
-    "Oslo": "E8 3BQ",
-    "Corsica Studios": "SE17 1AJ",
-}
+def _load_known_venue_postcodes() -> dict[str, str]:
+    import json
+    from importlib.resources import files
+    data = json.loads(files("whereabout.data").joinpath("venues.json").read_text())
+    return {v["name"]: v["postcode"] for v in data}
+
+_KNOWN_VENUE_POSTCODES = _load_known_venue_postcodes()
 
 
 def _artists_from_strong(text: str) -> list[str]:

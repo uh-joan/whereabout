@@ -5,12 +5,13 @@ from zoneinfo import ZoneInfo
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
-from whereabout.sources.venues._utils import venue_event_id
+from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
-_URL = "https://thejazzcafe.com/whats-on"
+_CFG = load_venue_config("venue_jazz_cafe")
+_URL = _CFG["url"]
 _BASE = "https://thejazzcafe.com"
-_POSTCODE = "NW1 7PG"
-_VENUE = "Jazz Cafe"
+_POSTCODE = _CFG["postcode"]
+_VENUE = _CFG["name"]
 _LONDON_TZ = ZoneInfo("Europe/London")
 
 _GENRE_MAP: dict[str, list[str]] = {

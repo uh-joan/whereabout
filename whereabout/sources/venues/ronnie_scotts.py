@@ -6,11 +6,13 @@ from zoneinfo import ZoneInfo
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
-from whereabout.sources.venues._utils import venue_event_id
+from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
-_URL = "https://www.ronniescotts.co.uk/find-a-show"
-_POSTCODE = "W1D 4HT"
-_VENUE = "Ronnie Scott's"
+_CFG = load_venue_config("venue_ronnie_scotts")
+_URL = _CFG["url"]
+_POSTCODE = _CFG["postcode"]
+_VENUE = _CFG["name"]
+_DEFAULT_HOUR, _DEFAULT_MIN = map(int, _CFG["default_time"].split(":"))
 _LONDON_TZ = ZoneInfo("Europe/London")
 # "Fri 22  May 2026" or "Fri 22  - Sat 23 May 2026" — capture first date only
 _DATE_RE = re.compile(r"\w+\s+(\d+)\s+(?:-\s*\w+\s+\d+\s+)?(\w+)\s+(\d{4})")
@@ -25,7 +27,7 @@ def _parse_date(el) -> datetime:
         if m:
             day, month, year = m.groups()
             naive = datetime.strptime(f"{day} {month} {year}", "%d %B %Y")
-            return naive.replace(hour=19, minute=30, tzinfo=_LONDON_TZ).astimezone(timezone.utc)
+            return naive.replace(hour=_DEFAULT_HOUR, minute=_DEFAULT_MIN, tzinfo=_LONDON_TZ).astimezone(timezone.utc)
     raise ValueError("date not found")
 
 
@@ -84,7 +86,7 @@ class RonnieScottsSource(BaseSource):
                     date_start_utc=dt,
                     venue_name=_VENUE,
                     venue_postcode=_POSTCODE,
-                    genres_raw=["jazz"],
+                    genres_raw=_CFG["genres"],
                     ticket_url=ticket_url,
                     raw_payload={},
                 ))

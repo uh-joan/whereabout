@@ -9,12 +9,14 @@ from bs4 import BeautifulSoup
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
-from whereabout.sources.venues._utils import venue_event_id
+from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
+_CFG = load_venue_config("venue_606_club")
 _BASE = "https://www.606club.co.uk"
-_URL = f"{_BASE}/events/"
-_POSTCODE = "SW10 0QD"
-_VENUE = "606 Club"
+_URL = _CFG["url"]
+_POSTCODE = _CFG["postcode"]
+_VENUE = _CFG["name"]
+_DEFAULT_HOUR, _DEFAULT_MIN = map(int, _CFG["default_time"].split(":"))
 _LONDON_TZ = ZoneInfo("Europe/London")
 _HEADERS = {"User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout"}
 _ORD_RE = re.compile(r"(\d+)(?:st|nd|rd|th)?([A-Z][a-z])")
@@ -87,7 +89,7 @@ class The606ClubSource(BaseSource):
                         date_start_utc=dt_utc,
                         venue_name=_VENUE,
                         venue_postcode=_POSTCODE,
-                        genres_raw=["jazz"],
+                        genres_raw=_CFG["genres"],
                         ticket_url=event_url,
                         raw_payload={},
                     ))

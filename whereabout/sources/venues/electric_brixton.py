@@ -9,11 +9,13 @@ from bs4 import BeautifulSoup
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
-from whereabout.sources.venues._utils import venue_event_id
+from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
-_URL = "https://www.electricbrixton.uk.com/events"
-_POSTCODE = "SW2 1RJ"
-_VENUE = "Electric Brixton"
+_CFG = load_venue_config("venue_electric_brixton")
+_URL = _CFG["url"]
+_POSTCODE = _CFG["postcode"]
+_VENUE = _CFG["name"]
+_DEFAULT_HOUR, _DEFAULT_MIN = map(int, _CFG["default_time"].split(":"))
 _LONDON_TZ = ZoneInfo("Europe/London")
 _HEADERS = {
     "User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout",
@@ -55,7 +57,7 @@ class ElectricBrixtonSource(BaseSource):
                 source_url = meta.get("itemid", _URL) if meta else _URL
                 ticket_url = ticket_el.get("href") if ticket_el else None
                 naive = _parse_date(date_el.get_text(strip=True))
-                local = naive.replace(hour=20, tzinfo=_LONDON_TZ)
+                local = naive.replace(hour=_DEFAULT_HOUR, minute=_DEFAULT_MIN, tzinfo=_LONDON_TZ)
                 dt_utc = local.astimezone(timezone.utc)
                 if not (query.date_range_start_utc <= dt_utc <= query.date_range_end_utc):
                     continue
@@ -67,7 +69,7 @@ class ElectricBrixtonSource(BaseSource):
                     date_start_utc=dt_utc,
                     venue_name=_VENUE,
                     venue_postcode=_POSTCODE,
-                    genres_raw=["electronic"],
+                    genres_raw=_CFG["genres"],
                     ticket_url=ticket_url,
                     raw_payload={},
                 ))

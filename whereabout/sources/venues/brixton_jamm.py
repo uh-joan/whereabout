@@ -8,11 +8,13 @@ from bs4 import BeautifulSoup
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
-from whereabout.sources.venues._utils import venue_event_id
+from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
-_URL = "https://www.brixtonjamm.org/allevents"
-_POSTCODE = "SW9 8JP"
-_VENUE = "Brixton Jamm"
+_CFG = load_venue_config("venue_brixton_jamm")
+_URL = _CFG["url"]
+_POSTCODE = _CFG["postcode"]
+_VENUE = _CFG["name"]
+_DEFAULT_HOUR, _DEFAULT_MIN = map(int, _CFG["default_time"].split(":"))
 _LONDON_TZ = ZoneInfo("Europe/London")
 _HEADERS = {"User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout"}
 
@@ -43,7 +45,7 @@ class BrixtonJammSource(BaseSource):
                 source_url = f"https://www.brixtonjamm.org{href}" if href.startswith("/") else href
                 date_str = date_t.get_text(strip=True)
                 naive = datetime.strptime(date_str, "%d %B %Y")
-                local = naive.replace(hour=20, tzinfo=_LONDON_TZ)
+                local = naive.replace(hour=_DEFAULT_HOUR, minute=_DEFAULT_MIN, tzinfo=_LONDON_TZ)
                 dt_utc = local.astimezone(timezone.utc)
                 if not (query.date_range_start_utc <= dt_utc <= query.date_range_end_utc):
                     continue
