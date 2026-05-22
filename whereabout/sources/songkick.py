@@ -18,6 +18,35 @@ _MAX_PAGES = 10
 # Split "Artist A, Artist B, and Artist C" into individual names
 _ARTIST_SPLIT_RE = re.compile(r",\s*(?:and\s+)?|\s+and\s+")
 
+# Well-known London venues whose Songkick city label is generic "London"
+_KNOWN_VENUE_POSTCODES: dict[str, str] = {
+    "Electric Ballroom": "NW1 8QP",
+    "KOKO": "NW1 7PH",
+    "Roundhouse": "NW1 8EH",
+    "The Jazz Cafe": "NW1 7PG",
+    "O2 Forum Kentish Town": "NW5 2LZ",
+    "Union Chapel": "N1 2UN",
+    "The Garage": "N5 1PL",
+    "fabric": "EC1A 9PY",
+    "Fabric": "EC1A 9PY",
+    "Barbican Hall": "EC2Y 8DS",
+    "Barbican": "EC2Y 8DS",
+    "Ministry of Sound": "SE1 6DP",
+    "Royal Festival Hall - Southbank Centre": "SE1 8XX",
+    "Southbank Centre": "SE1 8XX",
+    "HERE at Outernet": "WC2H 8LH",
+    "London Palladium": "W1F 8LT",
+    "The Dome": "N19 4QX",
+    "The Dukes of Highgate": "N6 5HX",
+    "indigo at The O2": "SE10 0DX",
+    "Royal Albert Hall": "SW7 2AP",
+    "Signature Brew Blackhorse Road": "E17 6PN",
+    "EartH": "E9 6JX",
+    "EartH Hackney": "E9 6JX",
+    "Oslo": "E8 3BQ",
+    "Corsica Studios": "SE17 1AJ",
+}
+
 
 def _artists_from_strong(text: str) -> list[str]:
     parts = _ARTIST_SPLIT_RE.split(text)
@@ -33,6 +62,28 @@ def _postcode_for_city(city: str) -> str | None:
         if n["name"] == resolved:
             prefixes = n.get("postcode_prefixes", [])
             return prefixes[0] if prefixes else None
+    return None
+
+
+def _postcode_for_venue(venue_name: str, city: str) -> str | None:
+    postcode = _postcode_for_city(city)
+    if postcode:
+        return postcode
+    known = _KNOWN_VENUE_POSTCODES.get(venue_name)
+    if known:
+        return known
+    # Fall back to our venues DB (populated by other sources)
+    try:
+        from whereabout.db import get_connection
+        with get_connection() as conn:
+            row = conn.execute(
+                "SELECT postcode FROM venues WHERE name = ? AND postcode IS NOT NULL LIMIT 1",
+                (venue_name,),
+            ).fetchone()
+        if row:
+            return row["postcode"]
+    except Exception:
+        pass
     return None
 
 
@@ -93,7 +144,7 @@ class SongkickSource(BaseSource):
 
                 city_el = li.select_one("p.location span.city-name")
                 city = city_el.get_text(strip=True).split(",")[0].strip() if city_el else ""
-                postcode = _postcode_for_city(city)
+                postcode = _postcode_for_venue(venue_name, city)
 
                 link_el = li.select_one("a.event-link[href]")
                 event_path = link_el["href"] if link_el else ""

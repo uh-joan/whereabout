@@ -358,5 +358,32 @@
     "lng": -0.0442,
     "aliases": ["hackney marshes", "homerton hospital"],
     "ward_aliases": ["Homerton", "Hackney Wick"]
+  },
+  {
+    "name": "Farringdon",
+    "borough": "Islington",
+    "postcode_prefixes": ["EC1A", "EC1M", "EC1R"],
+    "lat": 51.5196,
+    "lng": -0.1050,
+    "aliases": ["clerkenwell", "barbican", "smithfield", "exmouth market"],
+    "ward_aliases": ["Clerkenwell", "Bunhill"]
+  },
+  {
+    "name": "Kentish Town",
+    "borough": "Camden",
+    "postcode_prefixes": ["NW5"],
+    "lat": 51.5504,
+    "lng": -0.1426,
+    "aliases": ["gospel oak", "tufnell park"],
+    "ward_aliases": ["Kentish Town", "Gospel Oak", "Tufnell Park"]
+  },
+  {
+    "name": "Highbury",
+    "borough": "Islington",
+    "postcode_prefixes": ["N5"],
+    "lat": 51.5527,
+    "lng": -0.0985,
+    "aliases": ["arsenal", "highbury and islington", "canonbury"],
+    "ward_aliases": ["Highbury East", "Highbury West", "Canonbury"]
   }
 ]
