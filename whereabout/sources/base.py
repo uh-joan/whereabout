@@ -5,6 +5,7 @@ from whereabout.models import RawEvent, Query
 
 class BaseSource(ABC):
     source_id: str
+    live: bool = True
 
     @abstractmethod
     async def fetch(self, query: Query) -> list[RawEvent]:

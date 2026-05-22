@@ -80,6 +80,7 @@ def config_list_neighbourhoods() -> None:
 def refresh(
     source: str = typer.Option("dice_fm", "--source", help="Source ID to refresh"),
     horizon_days: int = typer.Option(14, "--horizon-days", help="Days ahead to fetch"),
+    browser: bool = typer.Option(False, "--browser/--no-browser", help="Also run browser-based venue scrapers (Jazz Cafe, Ronnie Scott's, Corsica Studios)"),
 ) -> None:
     """Admin: refresh the knowledge base from a source (v1.0: DICE only)."""
     import asyncio
@@ -109,6 +110,30 @@ def refresh(
     typer.echo(f"Fetched {len(raws)} events.")
     upserted = ingest(raws)
     typer.echo(f"Upserted {upserted} new events into KB.")
+
+    if browser:
+        from whereabout.sources.venues.jazz_cafe import JazzCafeSource
+        from whereabout.sources.venues.ronnie_scotts import RonnieScottsSource
+        from whereabout.sources.venues.corsica_studios import CorsicaStudiosSource
+
+        browser_sources = [JazzCafeSource(), RonnieScottsSource(), CorsicaStudiosSource()]
+
+        async def _fetch_browser() -> list:
+            results = await asyncio.gather(
+                *[s.fetch(query) for s in browser_sources], return_exceptions=True
+            )
+            raws_all = []
+            for r in results:
+                if isinstance(r, list):
+                    raws_all.extend(r)
+            return raws_all
+
+        typer.echo("Fetching from browser-based venue scrapers...")
+        browser_raws = asyncio.run(_fetch_browser())
+        typer.echo(f"Fetched {len(browser_raws)} events from browser scrapers.")
+        if browser_raws:
+            browser_upserted = ingest(browser_raws)
+            typer.echo(f"Upserted {browser_upserted} new events from browser scrapers into KB.")
 
 
 @app.command("query")

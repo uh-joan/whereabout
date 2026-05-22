@@ -6,6 +6,9 @@ from whereabout.sources.venues.the_606_club import The606ClubSource
 from whereabout.sources.venues.village_underground import VillageUndergroundSource
 from whereabout.sources.venues.earth_hackney import EartHHackneySource
 from whereabout.sources.venues.oslo_hackney import OsloHackneySource
+from whereabout.sources.venues.jazz_cafe import JazzCafeSource
+from whereabout.sources.venues.ronnie_scotts import RonnieScottsSource
+from whereabout.sources.venues.corsica_studios import CorsicaStudiosSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -16,4 +19,7 @@ ALL_VENUE_SOURCES = [
     VillageUndergroundSource(),
     EartHHackneySource(),
     OsloHackneySource(),
+    JazzCafeSource(),
+    RonnieScottsSource(),
+    CorsicaStudiosSource(),
 ]

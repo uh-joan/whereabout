@@ -1,16 +1,20 @@
 from __future__ import annotations
 import asyncio
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 from whereabout.models import Query, RawEvent, Event, Venue, Artist
 from whereabout.sources.dice_fm import DICESource
 from whereabout.sources.resident_advisor import RASource
 from whereabout import neighbourhoods as nb
 from whereabout.kb.ingest import ingest
+from whereabout.kb.read import read_events_for_range
 
 _GENRE_ALIASES: dict[str, list[str]] = json.loads(
     (Path(__file__).parent.parent / "data" / "genre_aliases.json").read_text()
 )
+
+_FRESHNESS_SECONDS = 6 * 3600
 
 
 def _expand_genres(genres: list[str]) -> set[str]:
@@ -23,27 +27,69 @@ def _expand_genres(genres: list[str]) -> set[str]:
     return expanded
 
 
+def _date_key(query: Query) -> str:
+    return f"{query.date_range_start_utc.date()}|{query.date_range_end_utc.date()}"
+
+
+def _is_stale(source_id: str, date_key: str) -> bool:
+    from whereabout.db import get_connection
+    with get_connection() as conn:
+        row = conn.execute(
+            "SELECT fetched_at FROM source_fetches WHERE source_id = ? AND date_key = ?",
+            (source_id, date_key),
+        ).fetchone()
+    if row is None:
+        return True
+    return (datetime.now(timezone.utc).timestamp() - row["fetched_at"]) > _FRESHNESS_SECONDS
+
+
+def _mark_fetched(source_id: str, date_key: str) -> None:
+    from whereabout.db import get_connection
+    with get_connection() as conn:
+        conn.execute(
+            "INSERT OR REPLACE INTO source_fetches(source_id, date_key, fetched_at) VALUES (?, ?, ?)",
+            (source_id, date_key, datetime.now(timezone.utc).timestamp()),
+        )
+        conn.commit()
+
+
 async def _fetch_all(query: Query) -> list[RawEvent]:
+    """Fetch from stale live sources only; ingest results and return fetched raws.
+
+    Returns the list of RawEvents fetched this call. If all sources are fresh,
+    returns an empty list (caller should read from KB instead).
+    """
     from whereabout.sources.venues import ALL_VENUE_SOURCES
-    sources = [DICESource(), RASource()] + ALL_VENUE_SOURCES
-    results = await asyncio.gather(*[s.fetch(query) for s in sources], return_exceptions=True)
+    date_key = _date_key(query)
+    all_sources = [DICESource(), RASource()] + ALL_VENUE_SOURCES
+    stale = [s for s in all_sources if getattr(s, "live", True) and _is_stale(s.source_id, date_key)]
+    if not stale:
+        return []
+    results = await asyncio.gather(*[s.fetch(query) for s in stale], return_exceptions=True)
     raws: list[RawEvent] = []
-    for r in results:
+    for s, r in zip(stale, results):
         if isinstance(r, list):
             raws.extend(r)
+            _mark_fetched(s.source_id, date_key)
+    if raws:
+        ingest(raws)
     return raws
 
 
 def rank(query: Query) -> list[dict]:
     """
-    Fetch from DICE and RA live, filter by neighbourhood, sort by date.
+    Fetch from stale live sources, filter by neighbourhood, sort by date.
+    When sources are fresh, reads from KB. Otherwise uses freshly fetched raws.
     Returns list of dicts ready for list_view rendering.
     """
-    raws: list[RawEvent] = asyncio.run(_fetch_all(query))
+    fetched = asyncio.run(_fetch_all(query))
 
-    # Persist to KB for card/detail access later
-    if raws:
-        ingest(raws)
+    if fetched:
+        # Use freshly fetched raws directly (also ingested above)
+        raws = fetched
+    else:
+        # All live sources were fresh — serve from KB
+        raws = read_events_for_range(query.date_range_start_utc, query.date_range_end_utc)
 
     # Always enforce neighbourhood — hyperlocal only, no generic "London" events
     raws = _filter_by_neighbourhood(raws, query.neighbourhood)
