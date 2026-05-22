@@ -24,16 +24,13 @@ def _expand_genres(genres: list[str]) -> set[str]:
 
 
 async def _fetch_all(query: Query) -> list[RawEvent]:
-    dice_results, ra_results = await asyncio.gather(
-        DICESource().fetch(query),
-        RASource().fetch(query),
-        return_exceptions=True,
-    )
+    from whereabout.sources.venues import ALL_VENUE_SOURCES
+    sources = [DICESource(), RASource()] + ALL_VENUE_SOURCES
+    results = await asyncio.gather(*[s.fetch(query) for s in sources], return_exceptions=True)
     raws: list[RawEvent] = []
-    if isinstance(dice_results, list):
-        raws.extend(dice_results)
-    if isinstance(ra_results, list):
-        raws.extend(ra_results)
+    for r in results:
+        if isinstance(r, list):
+            raws.extend(r)
     return raws
 
 
