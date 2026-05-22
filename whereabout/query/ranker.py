@@ -82,14 +82,9 @@ def rank(query: Query) -> list[dict]:
     When sources are fresh, reads from KB. Otherwise uses freshly fetched raws.
     Returns list of dicts ready for list_view rendering.
     """
-    fetched = asyncio.run(_fetch_all(query))
-
-    if fetched:
-        # Use freshly fetched raws directly (also ingested above)
-        raws = fetched
-    else:
-        # All live sources were fresh — serve from KB
-        raws = read_events_for_range(query.date_range_start_utc, query.date_range_end_utc)
+    asyncio.run(_fetch_all(query))
+    # Always read from KB — includes both live-fetched and scheduled (browser) sources
+    raws = read_events_for_range(query.date_range_start_utc, query.date_range_end_utc)
 
     # Always enforce neighbourhood — hyperlocal only, no generic "London" events
     raws = _filter_by_neighbourhood(raws, query.neighbourhood)
