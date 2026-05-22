@@ -9,6 +9,8 @@ from whereabout.sources.venues.oslo_hackney import OsloHackneySource
 from whereabout.sources.venues.jazz_cafe import JazzCafeSource
 from whereabout.sources.venues.ronnie_scotts import RonnieScottsSource
 from whereabout.sources.venues.corsica_studios import CorsicaStudiosSource
+from whereabout.sources.venues.vortex_jazz import VortexJazzSource
+from whereabout.sources.venues.cafe_oto import CafeOtoSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -22,4 +24,6 @@ ALL_VENUE_SOURCES = [
     JazzCafeSource(),
     RonnieScottsSource(),
     CorsicaStudiosSource(),
+    VortexJazzSource(),
+    CafeOtoSource(),
 ]
