@@ -236,6 +236,21 @@ def detail_cmd(
     typer.echo(detail_view.render_markdown(result, enrichments))
 
 
+@app.command("session")
+def session_cmd(
+    tui: bool = typer.Option(True, "--tui/--no-tui", help="Use full TUI (default) or plain REPL"),
+) -> None:
+    """Start an interactive session with query history and result navigation."""
+    from whereabout.config import UserConfig
+    cfg = UserConfig.load()
+    if tui:
+        from whereabout.tui.app import run_tui
+        run_tui(home_neighbourhood=cfg.home_neighbourhood)
+    else:
+        from whereabout.session import run_session
+        run_session(home_neighbourhood=cfg.home_neighbourhood)
+
+
 @app.command("doctor")
 def doctor(prune: bool = typer.Option(False, "--prune", help="Also prune old events")) -> None:
     """Run health checks."""

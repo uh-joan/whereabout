@@ -11,6 +11,8 @@ dependencies = [
     "structlog>=24",
     "tomli-w>=1",
     "beautifulsoup4>=4.14.3",
+    "prompt-toolkit>=3.0.52",
+    "textual>=8.2.7",
 ]
 
 [project.scripts]
