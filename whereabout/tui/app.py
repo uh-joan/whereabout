@@ -222,9 +222,9 @@ class SearchScreen(Screen):
         yield Static("Type a query above to discover live music.", id="empty-label")
         yield Footer()
 
-    def _header_text(self, label: str = "", count: int = 0, source: str = "") -> str:
+    def _header_text(self, label: str = "", count: int = 0) -> str:
         if label and count:
-            return f"  {label}  ·  {count} result{'s' if count != 1 else ''}  ·  {source}"
+            return f"  {label}  ·  {count} result{'s' if count != 1 else ''}  ·  [underline]live[/underline]"
         loc = f"home: {self._home_neighbourhood}" if self._home_neighbourhood else "hyper-local live music"
         return f"  whereabout  ·  {loc}"
 
@@ -320,6 +320,7 @@ class SearchScreen(Screen):
 
         if not display_results:
             header.update(self._header_text())
+            header.tooltip = None
             self.query_one("#empty-label", Static).update(
                 "No events found. Try a different query or neighbourhood."
             )
@@ -327,7 +328,8 @@ class SearchScreen(Screen):
             self.refresh_bindings()
             return
 
-        header.update(self._header_text(label, len(display_results), source))
+        header.update(self._header_text(label, len(display_results)))
+        header.tooltip = source  # full source list on hover
         for r in display_results:
             artists_str = ", ".join(r["artists"]) if r["artists"] else r["title"]
             table.add_row(
