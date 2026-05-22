@@ -1,15 +1,32 @@
 from __future__ import annotations
 import asyncio
+import re
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
+
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
 from whereabout.sources.venues._utils import venue_event_id
 
-_URL = "https://www.ronniescotts.co.uk/performances/"
-_POSTCODE = "W1D 4RL"
+_URL = "https://www.ronniescotts.co.uk/find-a-show"
+_POSTCODE = "W1D 4HT"
 _VENUE = "Ronnie Scott's"
 _LONDON_TZ = ZoneInfo("Europe/London")
+# "Fri 22  May 2026" or "Fri 22  - Sat 23 May 2026" — capture first date only
+_DATE_RE = re.compile(r"\w+\s+(\d+)\s+(?:-\s*\w+\s+\d+\s+)?(\w+)\s+(\d{4})")
+
+
+def _parse_date(el) -> datetime:
+    for div in el.find_all("div", recursive=False):
+        if div.get("class"):
+            continue
+        text = div.get_text(separator=" ", strip=True)
+        m = _DATE_RE.search(text)
+        if m:
+            day, month, year = m.groups()
+            naive = datetime.strptime(f"{day} {month} {year}", "%d %B %Y")
+            return naive.replace(hour=19, minute=30, tzinfo=_LONDON_TZ).astimezone(timezone.utc)
+    raise ValueError("date not found")
 
 
 class RonnieScottsSource(BaseSource):
@@ -29,8 +46,8 @@ class RonnieScottsSource(BaseSource):
         try:
             browser = launch(headless=True)
             page = browser.new_page()
-            page.goto(_URL, timeout=30000)
-            page.wait_for_selector(".event-item, .performance, article, .listing-item", timeout=10000)
+            page.goto(_URL, timeout=45000)
+            page.wait_for_selector("div.listing", timeout=20000)
             html = page.content()
         except Exception:
             return []
@@ -40,32 +57,25 @@ class RonnieScottsSource(BaseSource):
                     browser.close()
                 except Exception:
                     pass
+
+        from bs4 import BeautifulSoup
         soup = BeautifulSoup(html, "html.parser")
-        events = []
-        for el in soup.select(".event-item, .performance, article, .listing-item"):
+        events: list[RawEvent] = []
+
+        for el in soup.select("div.listing"):
             try:
-                title_el = el.select_one("h2, h3, .event-title, .title, .performance-title")
-                date_el = el.select_one("time, .date, .event-date, .performance-date")
-                link_el = el.select_one("a[href]")
-                if not title_el or not date_el:
-                    continue
-                title = title_el.get_text(strip=True)
-                date_str = date_el.get("datetime") or date_el.get_text(strip=True)
-                ticket_url = link_el.get("href") if link_el else None
-                if ticket_url and ticket_url.startswith("/"):
-                    ticket_url = "https://www.ronniescotts.co.uk" + ticket_url
-                try:
-                    if "T" in date_str or "Z" in date_str:
-                        dt = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-                        if dt.tzinfo is None:
-                            dt = dt.replace(tzinfo=_LONDON_TZ).astimezone(timezone.utc)
-                    else:
-                        naive = datetime.strptime(date_str[:10], "%Y-%m-%d")
-                        dt = naive.replace(hour=20, tzinfo=_LONDON_TZ).astimezone(timezone.utc)
-                except Exception:
-                    continue
+                dt = _parse_date(el)
                 if not (query.date_range_start_utc <= dt <= query.date_range_end_utc):
                     continue
+
+                title_el = el.select_one("h2.listing__title")
+                if not title_el:
+                    continue
+                title = title_el.get_text(strip=True)
+
+                btn = el.select_one("[data-show-event-url]")
+                ticket_url = btn["data-show-event-url"] if btn else None
+
                 events.append(RawEvent(
                     source=self.source_id,
                     source_event_id=venue_event_id(_POSTCODE, dt, title),
