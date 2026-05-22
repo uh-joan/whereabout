@@ -20,6 +20,7 @@ class RawEvent(BaseModel):
     genres_raw: list[str] = Field(default_factory=list)
     ticket_url: str | None = None
     price_text: str | None = None
+    is_festival: bool = False
     raw_payload: dict = Field(default_factory=dict)
 
 

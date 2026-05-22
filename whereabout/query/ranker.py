@@ -14,9 +14,6 @@ _GENRE_ALIASES: dict[str, list[str]] = json.loads(
     (Path(__file__).parent.parent / "data" / "genre_aliases.json").read_text()
 )
 
-_FRESHNESS_SECONDS = 6 * 3600
-
-
 def _expand_genres(genres: list[str]) -> set[str]:
     expanded: set[str] = set()
     for g in genres:
@@ -31,7 +28,7 @@ def _date_key(query: Query) -> str:
     return f"{query.date_range_start_utc.date()}|{query.date_range_end_utc.date()}"
 
 
-def _is_stale(source_id: str, date_key: str) -> bool:
+def _is_stale(source_id: str, date_key: str, freshness_seconds: int) -> bool:
     from whereabout.db import get_connection
     with get_connection() as conn:
         row = conn.execute(
@@ -40,7 +37,7 @@ def _is_stale(source_id: str, date_key: str) -> bool:
         ).fetchone()
     if row is None:
         return True
-    return (datetime.now(timezone.utc).timestamp() - row["fetched_at"]) > _FRESHNESS_SECONDS
+    return (datetime.now(timezone.utc).timestamp() - row["fetched_at"]) > freshness_seconds
 
 
 def _mark_fetched(source_id: str, date_key: str) -> None:
@@ -53,7 +50,7 @@ def _mark_fetched(source_id: str, date_key: str) -> None:
         conn.commit()
 
 
-async def _fetch_all(query: Query) -> list[RawEvent]:
+async def _fetch_all(query: Query, force: bool = False) -> list[RawEvent]:
     """Fetch from stale live sources only; ingest results and return fetched raws.
 
     Returns the list of RawEvents fetched this call. If all sources are fresh,
@@ -63,7 +60,11 @@ async def _fetch_all(query: Query) -> list[RawEvent]:
     from whereabout.sources.songkick import SongkickSource
     date_key = _date_key(query)
     all_sources = [DICESource(), RASource(), SongkickSource()] + ALL_VENUE_SOURCES
-    stale = [s for s in all_sources if getattr(s, "live", True) and _is_stale(s.source_id, date_key)]
+    live_sources = [s for s in all_sources if getattr(s, "live", True)]
+    if force:
+        stale = live_sources
+    else:
+        stale = [s for s in live_sources if _is_stale(s.source_id, date_key, s.freshness_seconds)]
     if not stale:
         return []
     results = await asyncio.gather(*[s.fetch(query) for s in stale], return_exceptions=True)
@@ -77,13 +78,13 @@ async def _fetch_all(query: Query) -> list[RawEvent]:
     return raws
 
 
-def rank(query: Query) -> list[dict]:
+def rank(query: Query, force: bool = False) -> list[dict]:
     """
     Fetch from stale live sources, filter by neighbourhood, sort by date.
     When sources are fresh, reads from KB. Otherwise uses freshly fetched raws.
     Returns list of dicts ready for list_view rendering.
     """
-    asyncio.run(_fetch_all(query))
+    asyncio.run(_fetch_all(query, force=force))
     # Always read from KB — includes both live-fetched and scheduled (browser) sources
     raws = read_events_for_range(query.date_range_start_utc, query.date_range_end_utc)
 
@@ -140,6 +141,20 @@ def _filter_by_genre(raws: list[RawEvent], genres: list[str]) -> list[RawEvent]:
     return result
 
 
+_FESTIVAL_VENUE_KEYWORDS = {"park", "common", "fields", "ground", "racecourse", "arena"}
+
+
+def _is_festival(raw: RawEvent) -> bool:
+    if raw.is_festival:
+        return True
+    venue_lower = (raw.venue_name or "").lower()
+    if any(kw in venue_lower for kw in _FESTIVAL_VENUE_KEYWORDS):
+        return True
+    if len(raw.artists) >= 6:
+        return True
+    return False
+
+
 def _to_result_dict(raw: RawEvent, index: int) -> dict:
     from zoneinfo import ZoneInfo
     from whereabout.kb.ingest import stable_hash
@@ -158,4 +173,5 @@ def _to_result_dict(raw: RawEvent, index: int) -> dict:
         "source": raw.source,
         "source_event_id": raw.source_event_id,
         "stable_hash": stable_hash(raw),
+        "is_festival": _is_festival(raw),
     }

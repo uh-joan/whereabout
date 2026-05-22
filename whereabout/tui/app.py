@@ -17,13 +17,29 @@ from textual.widgets import (
 )
 from textual import on, work
 
+_BANNER = (
+    "██╗    ██╗ ██╗  ██╗ ███████╗ ██████╗  ███████╗  █████╗  ██████╗   ██████╗  ████████╗\n"
+    "██║    ██║ ██║  ██║ ██╔════╝ ██╔══██╗ ██╔════╝ ██╔══██╗ ██╔══██╗ ██╔═══██╗ ╚══██╔══╝\n"
+    "██║ █╗ ██║ ███████║ █████╗   ██████╔╝ █████╗   ███████║ ██████╔╝ ██║   ██║    ██║   \n"
+    "██║███╗██║ ██╔══██║ ██╔══╝   ██╔══██╗ ██╔══╝   ██╔══██║ ██╔══██╗ ██║   ██║    ██║   \n"
+    "╚███╔███╔╝ ██║  ██║ ███████╗ ██║  ██║ ███████╗ ██║  ██║ ██████╔╝ ╚██████╔╝    ██║   \n"
+    " ╚══╝╚══╝  ╚═╝  ╚═╝ ╚══════╝ ╚═╝  ╚═╝ ╚══════╝ ╚═╝  ╚═╝ ╚═════╝   ╚═════╝    ╚═╝   \n"
+    "                   L o n d o n   L i v e   M u s i c"
+)
+
 CSS = """
 SearchScreen {
     layout: vertical;
 }
 
+#banner {
+    height: auto;
+    text-align: center;
+    color: $primary;
+    padding: 1 0 0 0;
+}
+
 #search-input {
-    dock: top;
     margin: 0;
 }
 
@@ -314,16 +330,23 @@ class SearchScreen(Screen):
         Binding("h", "go_home", "Home"),
         Binding("n", "change_neighbourhood", "Neighbourhood"),
         Binding("g", "filter_genre", "Genre"),
+        Binding("f", "toggle_festivals", "Festivals"),
+        Binding("r", "refresh", "Refresh"),
     ]
 
     def __init__(self, home_neighbourhood: str | None = None) -> None:
         super().__init__()
         self._home_neighbourhood = home_neighbourhood
         self._results: list[dict] = []
+        self._all_results: list[dict] = []
+        self._last_label: str = ""
+        self._last_source: str = ""
         self._auto_timeframe: str | None = None
         self._genre_filter: str | None = None
+        self._show_festivals: bool = False
 
     def compose(self) -> ComposeResult:
+        yield Static(_BANNER, id="banner")
         yield Input(
             placeholder="Search — e.g. 'jazz in brixton tonight'",
             id="search-input",
@@ -336,10 +359,11 @@ class SearchScreen(Screen):
 
     def _header_text(self, label: str = "", count: int = 0) -> str:
         genre_tag = f"  ·  {self._genre_filter}" if self._genre_filter else ""
+        festival_tag = "" if self._show_festivals else "  ·  no festivals"
         if label and count:
-            return f"  {label}{genre_tag}  ·  {count} result{'s' if count != 1 else ''}  ·  [underline]live[/underline]"
+            return f"  {label}{genre_tag}{festival_tag}  ·  {count} result{'s' if count != 1 else ''}  ·  [underline]live[/underline]"
         loc = f"home: {self._home_neighbourhood}" if self._home_neighbourhood else "hyper-local live music"
-        return f"  whereabout  ·  {loc}{genre_tag}"
+        return f"  whereabout  ·  {loc}{genre_tag}{festival_tag}"
 
     def on_mount(self) -> None:
         self.query_one("#loading", LoadingIndicator).display = False
@@ -354,7 +378,7 @@ class SearchScreen(Screen):
         else:
             inp.focus()
 
-    def _start_auto_fetch(self, timeframe: str | None = None) -> None:
+    def _start_auto_fetch(self, timeframe: str | None = None, force: bool = False) -> None:
         timeframe = timeframe or _default_timeframe()
         self._auto_timeframe = timeframe
         query = f"events in {self._home_neighbourhood} {timeframe}"
@@ -363,7 +387,7 @@ class SearchScreen(Screen):
         inp.focus()
         self.query_one("#empty-label", Static).display = False
         self.query_one("#loading", LoadingIndicator).display = True
-        self._fetch(query, auto=True, genre_filter=self._genre_filter)
+        self._fetch(query, auto=True, genre_filter=self._genre_filter, force=force)
 
     def check_action(self, action: str, parameters: tuple) -> bool | None:
         if action == "go_home":
@@ -373,6 +397,7 @@ class SearchScreen(Screen):
     def action_go_home(self) -> None:
         if not self._home_neighbourhood:
             return
+        self._genre_filter = None
         self.query_one("#results-table", DataTable).display = False
         self.query_one("#empty-label", Static).display = False
         self.query_one("#query-header", Static).update(self._header_text())
@@ -420,6 +445,29 @@ class SearchScreen(Screen):
 
         self.app.push_screen(GenreFilterScreen(self._genre_filter), handle_result)
 
+    def action_refresh(self) -> None:
+        text = self.query_one("#search-input", Input).value.strip()
+        if not text and not self._home_neighbourhood:
+            return
+        self.query_one("#loading", LoadingIndicator).display = True
+        self.query_one("#results-table", DataTable).display = False
+        self.query_one("#empty-label", Static).display = False
+        if text:
+            self._fetch(text, genre_filter=self._genre_filter, force=True)
+        else:
+            self._auto_timeframe = None
+            self._start_auto_fetch(force=True)
+
+    def action_toggle_festivals(self) -> None:
+        self._show_festivals = not self._show_festivals
+        self._results = self._apply_festival_filter(self._all_results)
+        self._render_table(self._results, self._last_label, self._last_source)
+
+    def _apply_festival_filter(self, results: list[dict]) -> list[dict]:
+        if self._show_festivals:
+            return results
+        return [r for r in results if not r.get("is_festival")]
+
     @on(Input.Submitted)
     def handle_search(self, event: Input.Submitted) -> None:
         text = event.value.strip()
@@ -432,12 +480,12 @@ class SearchScreen(Screen):
         self._fetch(text, genre_filter=self._genre_filter)
 
     @work(thread=True)
-    def _fetch(self, text: str, auto: bool = False, genre_filter: str | None = None) -> None:
+    def _fetch(self, text: str, auto: bool = False, genre_filter: str | None = None, force: bool = False) -> None:
         results: list[dict] = []
         label = ""
         source = ""
         try:
-            results, label, source = _run_query(text, self._home_neighbourhood, genre_filter)
+            results, label, source = _run_query(text, self._home_neighbourhood, genre_filter, force=force)
         except Exception:
             pass
         self.app.call_from_thread(self._show_results, results, label, source, auto)
@@ -445,16 +493,23 @@ class SearchScreen(Screen):
     def _show_results(
         self, results: list[dict], label: str, source: str, auto: bool = False
     ) -> None:
-        # Auto home fetch: expand window if too few results
-        if auto and len(results) < _HOME_MIN_RESULTS and self._auto_timeframe:
+        raw_display = results[:_HOME_RESULT_CAP] if auto else results
+        filtered = self._apply_festival_filter(raw_display)
+
+        # Auto home fetch: expand window if too few visible results
+        if auto and len(filtered) < _HOME_MIN_RESULTS and self._auto_timeframe:
             next_tf = _EXPAND_TO.get(self._auto_timeframe)
             if next_tf:
                 self._start_auto_fetch(next_tf)
                 return
 
-        display_results = results[:_HOME_RESULT_CAP] if auto else results
-        self._results = display_results
+        self._all_results = raw_display
+        self._last_label = label
+        self._last_source = source
+        self._results = filtered
+        self._render_table(filtered, label, source)
 
+    def _render_table(self, display_results: list[dict], label: str, source: str) -> None:
         self.query_one("#loading", LoadingIndicator).display = False
         header = self.query_one("#query-header", Static)
         table = self.query_one("#results-table", DataTable)
@@ -463,25 +518,34 @@ class SearchScreen(Screen):
         if not display_results:
             header.update(self._header_text())
             header.tooltip = None
-            home_hint = "  Press [bold]h[/bold] to go home." if self._home_neighbourhood else ""
-            self.query_one("#empty-label", Static).update(
-                f"No events found. Try a different query or neighbourhood.{home_hint}"
-            )
+            # Check if festivals are the only reason we have no results
+            festival_count = sum(1 for r in self._all_results if r.get("is_festival"))
+            if festival_count and festival_count == len(self._all_results) and not self._show_festivals:
+                empty_msg = (
+                    f"Only festival{'s' if festival_count != 1 else ''} found ({festival_count}). "
+                    f"Press [bold]f[/bold] to show them."
+                )
+            else:
+                home_hint = "  Press [bold]h[/bold] to go home." if self._home_neighbourhood else ""
+                empty_msg = f"No events found. Try a different query or neighbourhood.{home_hint}"
+            self.query_one("#empty-label", Static).update(empty_msg)
             self.query_one("#empty-label", Static).display = True
+            self.query_one("#search-input", Input).blur()
             self.refresh_bindings()
             return
 
         header.update(self._header_text(label, len(display_results)))
-        header.tooltip = source  # full source list on hover
-        for r in display_results:
+        header.tooltip = source
+        for pos, r in enumerate(display_results):
+            festival_prefix = "[F] " if r.get("is_festival") else ""
             artists_str = ", ".join(r["artists"]) if r["artists"] else r["title"]
             table.add_row(
-                str(r["index"]),
-                artists_str[:50],
+                str(pos + 1),
+                f"{festival_prefix}{artists_str}"[:50],
                 r["date_local"],
                 r["time_local"],
                 r["venue"][:35],
-                key=str(r["index"]),
+                key=str(pos + 1),
             )
         table.display = True
         table.focus()
@@ -506,7 +570,7 @@ class WhereaboutApp(App):
         self.push_screen(SearchScreen(self._home_neighbourhood))
 
 
-def _run_query(text: str, home_neighbourhood: str | None, genre_filter: str | None = None) -> tuple[list[dict], str, str]:
+def _run_query(text: str, home_neighbourhood: str | None, genre_filter: str | None = None, force: bool = False) -> tuple[list[dict], str, str]:
     from whereabout.query import parser, ranker
     from whereabout.config import UserConfig
 
@@ -518,7 +582,7 @@ def _run_query(text: str, home_neighbourhood: str | None, genre_filter: str | No
     if genre_filter:
         q = q.model_copy(update={"genres": [genre_filter]})
 
-    results = ranker.rank(q)
+    results = ranker.rank(q, force=force)
 
     # Nearby fallback: if no results for a specific neighbourhood, try nearest ones
     nearby_label: str | None = None
@@ -526,7 +590,7 @@ def _run_query(text: str, home_neighbourhood: str | None, genre_filter: str | No
         from whereabout import neighbourhoods as nb
         for nearby in nb.nearby_neighbourhoods(effective, max_count=4):
             nearby_q = q.model_copy(update={"neighbourhood": nearby})
-            nearby_results = ranker.rank(nearby_q)
+            nearby_results = ranker.rank(nearby_q, force=force)
             if nearby_results:
                 results = nearby_results
                 nearby_label = nearby

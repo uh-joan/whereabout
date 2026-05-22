@@ -90,6 +90,7 @@ def _postcode_for_venue(venue_name: str, city: str) -> str | None:
 class SongkickSource(BaseSource):
     source_id = "songkick"
     live = True
+    freshness_seconds = 12 * 3600
 
     async def fetch(self, query: Query) -> list[RawEvent]:
         return await asyncio.to_thread(self._fetch_sync, query)
@@ -150,6 +151,7 @@ class SongkickSource(BaseSource):
                 event_path = link_el["href"] if link_el else ""
                 event_url = f"https://www.songkick.com{event_path}" if event_path else _BASE_URL
                 event_id = event_path.rstrip("/").split("/")[-1]
+                is_festival = "/festivals/" in event_path
 
                 events.append(RawEvent(
                     source=self.source_id,
@@ -161,6 +163,7 @@ class SongkickSource(BaseSource):
                     venue_postcode=postcode,
                     artists=artists,
                     ticket_url=event_url,
+                    is_festival=is_festival,
                     raw_payload={},
                 ))
 

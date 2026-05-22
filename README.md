@@ -1,11 +1,25 @@
-# Whereabout
+```
+╔══════════════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                          ║
+║  ██╗    ██╗ ██╗  ██╗ ███████╗ ██████╗  ███████╗  █████╗  ██████╗   ██████╗  ████████╗  ║
+║  ██║    ██║ ██║  ██║ ██╔════╝ ██╔══██╗ ██╔════╝ ██╔══██╗ ██╔══██╗ ██╔═══██╗ ╚══██╔══╝  ║
+║  ██║ █╗ ██║ ███████║ █████╗   ██████╔╝ █████╗   ███████║ ██████╔╝ ██║   ██║    ██║      ║
+║  ██║███╗██║ ██╔══██║ ██╔══╝   ██╔══██╗ ██╔══╝   ██╔══██║ ██╔══██╗ ██║   ██║    ██║      ║
+║  ╚███╔███╔╝ ██║  ██║ ███████╗ ██║  ██║ ███████╗ ██║  ██║ ██████╔╝ ╚██████╔╝    ██║      ║
+║   ╚══╝╚══╝  ╚═╝  ╚═╝ ╚══════╝ ╚═╝  ╚═╝ ╚══════╝ ╚═╝  ╚═╝ ╚═════╝   ╚═════╝    ╚═╝      ║
+║                                                                                          ║
+║                        L o n d o n   L i v e   M u s i c                                ║
+╚══════════════════════════════════════════════════════════════════════════════════════════╝
+```
 
-Hyper-local live music discovery for London. Ask in plain English; get neighbourhood-precise gig listings.
+# Whereabot
+
+Hyper-local live music discovery for London. Ask in plain English; get neighbourhood-precise gig listings pulled live from DICE, Resident Advisor, Songkick, and 13+ venue websites.
 
 ```
+whereabout session              # interactive TUI (recommended)
 whereabout query "jazz in brixton this weekend"
-whereabout query "soul live music in camden"
-whereabout query "show me jazz gigs around me"
+whereabout query "soul in camden tonight" --limit 20
 ```
 
 ## Install
@@ -16,9 +30,8 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 uv tool install whereabout
 ```
 
-First run, install Playwright (needed for v1.1 venue scraping; optional in v1.0):
+For venues that require a browser scraper (CloakBrowser-backed sources):
 ```bash
-# Optional in v1.0 — DICE queries work without it
 playwright install chromium
 ```
 
@@ -38,7 +51,7 @@ whereabout config init
 # Prompts: "Your home neighbourhood (e.g. Brixton, Camden):"
 ```
 
-"Around me" queries resolve to this neighbourhood by default. You can always override in the query.
+"Around me" queries resolve to this neighbourhood by default.
 
 ### 3. Health check
 
@@ -46,28 +59,29 @@ whereabout config init
 whereabout doctor
 ```
 
-Expected output on a healthy setup:
-```
-✓ config
-✓ db
-✓ playwright  (v1.1 — not required in v1.0)
-✓ kb_meta     (live DICE — no scheduled refresh in v1.0)
-✓ api_key
-```
-
-### 4. Install the Claude Code skill (optional)
-
-Copy `claude-skill/skill.md` to your Claude Code skills directory:
-```bash
-cp claude-skill/skill.md ~/.claude/skills/whereabout.md
-```
-
-Then in Claude Code you can type naturally:
-> show me jazz gigs around me
-
 ## Usage
 
-### Search for events
+### Interactive TUI (recommended)
+
+```bash
+whereabout session
+```
+
+| Key | Action |
+|-----|--------|
+| `/` or `s` | Focus search input |
+| `Enter` | Run query |
+| `h` | Go home (clears genre filter, runs home neighbourhood) |
+| `n` | Change home neighbourhood |
+| `g` | Filter by genre |
+| `f` | Toggle festival events (hidden by default) |
+| `Enter` on row | Open event detail with artist bios |
+| `Esc` / `b` | Back |
+| `Ctrl+C` | Quit |
+
+When a query returns no results, the TUI automatically tries the nearest neighbourhoods before showing the empty state. If results only exist as festivals, it prompts you to press `f`.
+
+### CLI queries
 
 ```bash
 whereabout query "jazz in brixton"
@@ -82,79 +96,76 @@ whereabout query "show me jazz gigs around me" --limit 20
 whereabout detail <event_id>
 ```
 
-### List known neighbourhoods
-
-```bash
-whereabout config list-neighbourhoods
-```
-
-### Refresh the knowledge base (admin)
-
-```bash
-whereabout refresh --source dice_fm --horizon-days 14
-```
-
 ### Manage config
 
 ```bash
 whereabout config get home_neighbourhood
 whereabout config set home_neighbourhood Dalston
-whereabout config set default_horizon_days 7
+whereabout config list-neighbourhoods   # 49 supported neighbourhoods
+```
+
+### Scheduled scraping (CloakBrowser-backed venues)
+
+```bash
+whereabout schedule install    # install cron job for browser-scraped venues
+whereabout schedule status
+whereabout schedule uninstall
+```
+
+## Sources
+
+Events are fetched from multiple sources and merged into a local SQLite knowledge base, deduplicated by venue + time.
+
+| Source | Type | Coverage |
+|--------|------|----------|
+| DICE FM | Live JSON API | Major London venues |
+| Resident Advisor | Live scraper | Electronic / club nights |
+| Songkick | Live scraper | 2000+ London metro events |
+| Brilliant Corners | Venue scraper | Dalston |
+| Brixton Jamm | Venue scraper | Brixton |
+| Hootananny | Venue scraper | Brixton |
+| Electric Brixton | Venue scraper | Brixton |
+| The 606 Club | Venue scraper | Chelsea |
+| Village Underground | Venue scraper | Shoreditch |
+| EartH Hackney | Venue scraper | Hackney |
+| Oslo Hackney | Venue scraper | Dalston |
+| Jazz Cafe | Venue scraper | Camden |
+| Ronnie Scott's | CloakBrowser | Soho |
+| Corsica Studios | Venue scraper | Elephant & Castle |
+| Vortex Jazz | Venue scraper | Stoke Newington |
+| Cafe OTO | Venue scraper | Dalston |
+
+Sources are refreshed when stale (6-hour cache). Browser-scraped sources run on a cron schedule.
+
+## Neighbourhoods
+
+49 London neighbourhoods supported, resolved from postcode prefixes and aliases. Includes colloquial names — "stokey" resolves to Stoke Newington, "angel" to Islington, etc.
+
+```bash
+whereabout config list-neighbourhoods
 ```
 
 ## Architecture
 
-Whereabout is a Python CLI with five modules:
-
 | Module | Role |
-|---|---|
-| `query/parser.py` | NL → structured Query via Claude Sonnet |
-| `query/ranker.py` | Fetches DICE live, filters by neighbourhood + genre |
+|--------|------|
+| `query/parser.py` | NL → structured Query via Claude |
+| `query/ranker.py` | Fetches live sources, filters by neighbourhood + genre + festival flag |
 | `query/enrich.py` | Artist bios via Claude, cached 30 days |
-| `kb/ingest.py` | Upserts events into SQLite (multi-source tolerant) |
+| `kb/ingest.py` | Upserts events into SQLite (multi-source, deduplication) |
+| `kb/read.py` | Reads events from KB by date range |
+| `sources/` | Per-source scrapers (DICE, RA, Songkick, 13 venue scrapers) |
+| `neighbourhoods.py` | Postcode-prefix → neighbourhood resolver, nearby fallback |
+| `tui/app.py` | Textual TUI (search, genre filter, festival toggle, detail view) |
 | `doctor.py` | Health checks |
-
-**v1.0:** DICE FM only (live JSON API, 5-min response cache).
-**v1.1 (planned):** Resident Advisor + venue websites via Playwright scraping.
 
 ### Location resolution
 
-"In Brixton" resolves to postcodes SW2 and SW9. The system uses postcode-prefix matching, not ONS ward names (which differ from colloquial names — "Brixton Windrush" is mapped to "Brixton" via ward aliases).
+"In Brixton" resolves to postcodes SW2 and SW9. Postcode-prefix matching is used throughout — not ONS ward names. Ward aliases (e.g. "Brixton Windrush") and colloquial aliases (e.g. "stokey", "angel") are all mapped to canonical neighbourhood names.
 
-## Spec coverage (v1.0)
+### Festival detection
 
-| Acceptance Criterion | Status |
-|---|---|
-| #1 NL query returns gig list | ✅ |
-| #2 "Around me" → home neighbourhood | ✅ |
-| #3 Explicit location overrides home | ✅ |
-| #4 Brixton ≠ South London (neighbourhood precision) | ✅ (verified via synthetic fixture; live DICE Brixton coverage is sparse — demos use Camden/Dalston) |
-| #5 List → drill-down | ✅ |
-| #6 Drill-down enrichment (artist bios) | ✅ |
-| #7 Multi-source KB (RA + DICE + venues) | ⏳ v1.1 |
-| #8 First-time user prompted | ✅ |
-| #9 Genre variations (neo-soul → soul) | ✅ |
-| #10 DICE refresh re-runnable | ✅ |
-
-## Troubleshooting
-
-**`ANTHROPIC_API_KEY` not set**
-```
-export ANTHROPIC_API_KEY=sk-ant-...
-```
-
-**`whereabout doctor` shows ✗ config**
-```bash
-whereabout config init
-```
-
-**No results for my neighbourhood**
-- Run `whereabout config list-neighbourhoods` to see the ~40 supported neighbourhoods.
-- DICE Brixton coverage is sparse — try Camden or Dalston for denser results.
-- Check `whereabout doctor` for health issues.
-
-**Token budget exceeded**
-The daily cap is 50,000 tokens. Usage resets at midnight UTC. Check `~/.cache/whereabout/token-ledger.json` to see today's usage.
+Events are flagged as festivals if: the Songkick URL contains `/festivals/`, the venue name contains outdoor keywords (park, common, fields), or 6+ artists are listed. Festivals are hidden by default in the TUI; press `f` to show them.
 
 ## Development
 
@@ -171,11 +182,9 @@ Test ritual before any PR:
 uv run pytest && uv run whereabout doctor
 ```
 
-**No CI in v1.0.** v1.1 will add a minimal GitHub Actions workflow. Until then, `pytest` is the gate.
-
 ## Data & Privacy
 
-- Event data is fetched from DICE FM's public API.
+- Event data is fetched from public APIs and venue websites.
 - Artist bios are generated by Claude (Anthropic). No personal data is sent.
 - All data is stored locally in `~/.local/share/whereabout/whereabout.db`.
 - Cache files live in `~/.cache/whereabout/`.
