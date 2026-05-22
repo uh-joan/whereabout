@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
+from whereabout.sources.venues._utils import venue_event_id
 
 _URL = "https://brilliantcornerslondon.co.uk/dates/"
 _POSTCODE = "E8 4AE"
@@ -44,7 +45,7 @@ class BrilliantCornersSource(BaseSource):
                     continue
                 events.append(RawEvent(
                     source=self.source_id,
-                    source_event_id=f"{_POSTCODE}_{dt_utc.date()}_{title[:40]}",
+                    source_event_id=venue_event_id(_POSTCODE, dt_utc, title),
                     source_url=_URL,
                     title=title,
                     date_start_utc=dt_utc,

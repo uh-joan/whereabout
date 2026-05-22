@@ -100,6 +100,7 @@ def _filter_by_genre(raws: list[RawEvent], genres: list[str]) -> list[RawEvent]:
 
 def _to_result_dict(raw: RawEvent, index: int) -> dict:
     from zoneinfo import ZoneInfo
+    from whereabout.kb.ingest import stable_hash
     local_dt = raw.date_start_utc.astimezone(ZoneInfo("Europe/London"))
     return {
         "index": index,
@@ -114,4 +115,5 @@ def _to_result_dict(raw: RawEvent, index: int) -> dict:
         "price": raw.price_text or "TBC",
         "source": raw.source,
         "source_event_id": raw.source_event_id,
+        "stable_hash": stable_hash(raw),
     }

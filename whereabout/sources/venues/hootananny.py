@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
+from whereabout.sources.venues._utils import venue_event_id
 
 _URL = "https://hootanannybrixton.co.uk/"
 _POSTCODE = "SW2 1DF"
@@ -60,7 +61,7 @@ class HootanannySource(BaseSource):
                 genres = [g.strip().lower() for g in showtype.split(",") if g.strip()]
                 events.append(RawEvent(
                     source=self.source_id,
-                    source_event_id=f"{_POSTCODE}_{dt_utc.date()}_{title[:40]}",
+                    source_event_id=venue_event_id(_POSTCODE, dt_utc, title),
                     source_url=source_url,
                     title=title,
                     date_start_utc=dt_utc,
