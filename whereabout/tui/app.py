@@ -135,6 +135,23 @@ GenreFilterScreen {
     color: $text-muted;
     margin-top: 1;
 }
+
+#now-playing-bar {
+    height: 1;
+    background: $surface;
+    color: $success;
+    padding: 0 2;
+    display: none;
+}
+
+#now-playing-bar.active {
+    display: block;
+}
+
+#now-playing-bar.error {
+    display: block;
+    color: $warning;
+}
 """
 
 
@@ -330,6 +347,7 @@ class SearchScreen(Screen):
         Binding("g", "filter_genre", "Genre"),
         Binding("f", "toggle_festivals", "Festivals"),
         Binding("r", "refresh", "Refresh"),
+        Binding("p", "play_preview", "Preview"),
     ]
 
     def __init__(self, home_neighbourhood: str | None = None) -> None:
@@ -342,6 +360,9 @@ class SearchScreen(Screen):
         self._auto_timeframe: str | None = None
         self._genre_filter: str | None = None
         self._show_festivals: bool = False
+        self._now_playing: str | None = None
+        self._preview_row: int = -1
+        self._preview_timer = None
 
     def compose(self) -> ComposeResult:
         yield Static(_BANNER, id="banner")
@@ -353,15 +374,17 @@ class SearchScreen(Screen):
         yield LoadingIndicator(id="loading")
         yield DataTable(id="results-table", cursor_type="row", zebra_stripes=True)
         yield Static("Type a query above to discover live music.", id="empty-label")
+        yield Static("", id="now-playing-bar")
         yield Footer()
 
     def _header_text(self, label: str = "", count: int = 0) -> str:
         genre_tag = f"  ·  {self._genre_filter}" if self._genre_filter else ""
         festival_tag = "" if self._show_festivals else "  ·  no festivals"
+        now_playing_tag = f"  ·  ♫ {self._now_playing}" if self._now_playing else ""
         if label and count:
-            return f"  {label}{genre_tag}{festival_tag}  ·  {count} result{'s' if count != 1 else ''}  ·  [underline]live[/underline]"
+            return f"  {label}{genre_tag}{festival_tag}  ·  {count} result{'s' if count != 1 else ''}  ·  [underline]live[/underline]{now_playing_tag}"
         loc = f"home: {self._home_neighbourhood}" if self._home_neighbourhood else "hyper-local live music"
-        return f"  whereabout  ·  {loc}{genre_tag}{festival_tag}"
+        return f"  whereabout  ·  {loc}{genre_tag}{festival_tag}{now_playing_tag}"
 
     def on_mount(self) -> None:
         self.query_one("#loading", LoadingIndicator).display = False
@@ -549,10 +572,99 @@ class SearchScreen(Screen):
         table.focus()
         self.refresh_bindings()
 
+    @on(DataTable.RowHighlighted)
+    def on_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
+        if event.row_key is None:
+            return
+        idx = int(event.row_key.value) - 1
+        self._preview_row = idx
+        if self._preview_timer is not None:
+            self._preview_timer.stop()
+        self._preview_timer = self.set_timer(0.35, self._do_preview)
+
+    def _do_preview(self) -> None:
+        self._preview_timer = None
+        idx = self._preview_row
+        if 0 <= idx < len(self._results):
+            artists = self._results[idx]["artists"]
+            if artists:
+                self._play_preview(artists[0])
+
+    def action_play_preview(self) -> None:
+        table = self.query_one("#results-table", DataTable)
+        if not table.display:
+            return
+        idx = self._preview_row if self._preview_row >= 0 else table.cursor_row
+        if 0 <= idx < len(self._results):
+            artists = self._results[idx]["artists"]
+            if artists:
+                self._play_preview(artists[0])
+
+    @work(thread=True, exclusive=True)
+    def _play_preview(self, artist: str) -> None:
+        import httpx as _httpx
+        from whereabout.sources.spotify_preview import get_preview_info, play_preview, stop_preview
+        stop_preview()
+        try:
+            info = get_preview_info(artist)
+            if not info:
+                self.app.call_from_thread(self._set_preview_error, f"No preview found for {artist}")
+                return
+            self.app.call_from_thread(self._set_now_playing, info["artist"], info["title"])
+            proc = play_preview(info["url"])
+            if proc:
+                proc.wait()
+        except _httpx.TimeoutException:
+            self.app.call_from_thread(self._set_preview_error, "Preview timed out")
+            return
+        except _httpx.HTTPError as e:
+            self.app.call_from_thread(self._set_preview_error, f"Preview unavailable ({e.response.status_code if hasattr(e, 'response') else 'network error'})")
+            return
+        except FileNotFoundError:
+            self.app.call_from_thread(self._set_preview_error, "afplay not found — macOS only")
+            return
+        except Exception as e:
+            self.app.call_from_thread(self._set_preview_error, f"Preview error: {e}")
+            return
+        self.app.call_from_thread(self._set_now_playing, None, None)
+
+    def _set_preview_error(self, msg: str) -> None:
+        bar = self.query_one("#now-playing-bar", Static)
+        bar.update(f"⚠  {msg}")
+        bar.remove_class("active")
+        bar.add_class("error")
+        self.set_timer(4, self._clear_preview_bar)
+
+    def _set_now_playing(self, artist: str | None, title: str | None) -> None:
+        self._now_playing = artist
+        bar = self.query_one("#now-playing-bar", Static)
+        bar.remove_class("error")
+        if artist:
+            bar.update(f"♫  {title}  ·  {artist}  ·  via Deezer")
+            bar.add_class("active")
+        else:
+            bar.update("")
+            bar.remove_class("active")
+        header = self.query_one("#query-header", Static)
+        header.update(self._header_text(self._last_label, len(self._results)))
+
+    def _clear_preview_bar(self) -> None:
+        bar = self.query_one("#now-playing-bar", Static)
+        bar.update("")
+        bar.remove_class("active")
+        bar.remove_class("error")
+
+    def on_unmount(self) -> None:
+        from whereabout.sources.spotify_preview import stop_preview
+        stop_preview()
+
     @on(DataTable.RowSelected)
     def handle_row_selected(self, event: DataTable.RowSelected) -> None:
         idx = int(event.row_key.value) - 1
         if 0 <= idx < len(self._results):
+            from whereabout.sources.spotify_preview import stop_preview
+            stop_preview()
+            self._set_now_playing(None, None)
             self.app.push_screen(DetailScreen(self._results[idx]))
 
 

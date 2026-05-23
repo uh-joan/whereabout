@@ -68,11 +68,17 @@ whereabout session
 | `n` | Change home neighbourhood |
 | `g` | Filter by genre |
 | `f` | Toggle festival events (hidden by default) |
+| `r` | Force-refresh all sources |
+| `p` | Play preview for focused row |
 | `Enter` on row | Open event detail with artist bios |
 | `Esc` / `b` | Back |
 | `Ctrl+C` | Quit |
 
 When a query returns no results, the TUI automatically tries the nearest neighbourhoods before showing the empty state. If results only exist as festivals, it prompts you to press `f`.
+
+### Music preview
+
+Hover over any result row for ~350ms and a 30-second preview plays automatically via [Deezer](https://www.deezer.com). Press `p` to trigger manually. A green status bar shows the track name, artist, and source. If no preview is available, an amber bar shows the reason and auto-dismisses after 4 seconds. No account or API key required.
 
 ### CLI queries
 

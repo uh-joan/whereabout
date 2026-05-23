@@ -13,6 +13,8 @@ class UserConfig(BaseModel):
     default_horizon_days: int = 14
     default_result_limit: int = 10
     preferred_genres: list[str] = []
+    spotify_client_id: str = ""
+    spotify_client_secret: str = ""
 
     @classmethod
     def load(cls) -> "UserConfig":
