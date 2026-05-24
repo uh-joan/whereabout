@@ -1,5 +1,19 @@
 [
   {
+    "source_id": "venue_windmill_brixton",
+    "name": "The Windmill Brixton",
+    "postcode": "SW2 5BZ",
+    "url": "https://www.windmillbrixton.co.uk/",
+    "default_time": "20:00",
+    "genres": [
+      "indie",
+      "rock",
+      "alternative",
+      "punk",
+      "folk"
+    ]
+  },
+  {
     "source_id": "venue_brilliant_corners",
     "name": "Brilliant Corners",
     "postcode": "E8 4AE",

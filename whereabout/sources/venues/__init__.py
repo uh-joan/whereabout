@@ -1,3 +1,4 @@
+from whereabout.sources.venues.windmill_brixton import WindmillBrixtonSource
 from whereabout.sources.venues.brilliant_corners import BrilliantCornersSource
 from whereabout.sources.venues.brixton_jamm import BrixtonJammSource
 from whereabout.sources.venues.hootananny import HootanannySource
@@ -76,4 +77,5 @@ ALL_VENUE_SOURCES = [
     BoisdaleSource(),
     UnderworldCamdenSource(),
     O2ShepherdsBushEmpireSource(),
+    WindmillBrixtonSource(),
 ]
