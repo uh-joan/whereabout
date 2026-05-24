@@ -35,6 +35,7 @@ from whereabout.sources.venues.smitf import SMITFSource
 from whereabout.sources.venues.conway_hall import ConwayHallSource
 from whereabout.sources.venues.boisdale import BoisdaleSource
 from whereabout.sources.venues.underworld_camden import UnderworldCamdenSource
+from whereabout.sources.venues.o2_shepherds_bush_empire import O2ShepherdsBushEmpireSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -74,4 +75,5 @@ ALL_VENUE_SOURCES = [
     ConwayHallSource(),
     BoisdaleSource(),
     UnderworldCamdenSource(),
+    O2ShepherdsBushEmpireSource(),
 ]

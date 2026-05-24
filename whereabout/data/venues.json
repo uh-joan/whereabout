@@ -420,5 +420,13 @@
     "url": "https://www.theunderworldcamden.co.uk/",
     "default_time": "19:00",
     "genres": ["metal", "punk", "rock", "alternative", "indie"]
+  },
+  {
+    "source_id": "venue_o2_shepherds_bush_empire",
+    "name": "O2 Shepherd's Bush Empire",
+    "postcode": "W12 8TT",
+    "url": "https://www.o2shepherdsbushempire.co.uk/",
+    "default_time": "19:30",
+    "genres": ["rock", "pop", "indie", "alternative", "soul"]
   }
 ]
