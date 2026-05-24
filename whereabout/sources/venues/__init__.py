@@ -31,6 +31,9 @@ from whereabout.sources.venues.green_note import GreenNoteSource
 from whereabout.sources.venues.cecil_sharp_house import CecilSharpHouseSource
 from whereabout.sources.venues.africa_centre import AfricaCentreSource
 from whereabout.sources.venues.hackney_empire import HackneyEmpireSource
+from whereabout.sources.venues.smitf import SMITFSource
+from whereabout.sources.venues.conway_hall import ConwayHallSource
+from whereabout.sources.venues.boisdale import BoisdaleSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -66,4 +69,7 @@ ALL_VENUE_SOURCES = [
     CecilSharpHouseSource(),
     AfricaCentreSource(),
     HackneyEmpireSource(),
+    SMITFSource(),
+    ConwayHallSource(),
+    BoisdaleSource(),
 ]

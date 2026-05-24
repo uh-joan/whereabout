@@ -372,6 +372,19 @@
     ]
   },
   {
+    "source_id": "venue_smitf",
+    "name": "St Martin-in-the-Fields",
+    "postcode": "WC2N 4JJ",
+    "url": "https://www.stmartin-in-the-fields.org/whats-on/",
+    "default_time": "19:30",
+    "genres": [
+      "classical",
+      "sacred",
+      "choral",
+      "world"
+    ]
+  },
+  {
     "source_id": "venue_hackney_empire",
     "name": "Hackney Empire",
     "postcode": "E8 1EJ",
@@ -383,5 +396,21 @@
       "world",
       "pop"
     ]
+  },
+  {
+    "source_id": "venue_conway_hall",
+    "name": "Conway Hall",
+    "postcode": "WC1R 4RL",
+    "url": "https://www.conwayhall.org.uk/whats-on/",
+    "default_time": "18:30",
+    "genres": ["classical", "chamber", "folk", "world"]
+  },
+  {
+    "source_id": "venue_boisdale",
+    "name": "Boisdale of Canary Wharf",
+    "postcode": "E14 5AX",
+    "url": "https://www.boisdale.co.uk/restaurant/canary-wharf",
+    "default_time": "20:00",
+    "genres": ["jazz", "soul", "r&b", "blues"]
   }
 ]
