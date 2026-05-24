@@ -11,6 +11,8 @@ from whereabout.sources.venues.ronnie_scotts import RonnieScottsSource
 from whereabout.sources.venues.corsica_studios import CorsicaStudiosSource
 from whereabout.sources.venues.vortex_jazz import VortexJazzSource
 from whereabout.sources.venues.cafe_oto import CafeOtoSource
+from whereabout.sources.venues.phonox import PhonoxSource
+from whereabout.sources.venues.scala import ScalaSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -26,4 +28,6 @@ ALL_VENUE_SOURCES = [
     CorsicaStudiosSource(),
     VortexJazzSource(),
     CafeOtoSource(),
+    PhonoxSource(),
+    ScalaSource(),
 ]

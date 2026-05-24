@@ -102,5 +102,21 @@
     "url": "https://vortexjazz.co.uk/events/",
     "default_time": "19:30",
     "genres": ["jazz"]
+  },
+  {
+    "source_id": "venue_phonox",
+    "name": "Phonox",
+    "postcode": "SW9 8LQ",
+    "url": "https://phonox.co.uk/whats-on/",
+    "default_time": "22:00",
+    "genres": ["electronic", "house", "techno"]
+  },
+  {
+    "source_id": "venue_scala",
+    "name": "Scala",
+    "postcode": "N1 9NL",
+    "url": "https://www.scala.co.uk/events/",
+    "default_time": "19:00",
+    "genres": ["indie", "electronic", "rock"]
   }
 ]

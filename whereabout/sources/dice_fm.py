@@ -14,7 +14,7 @@ CACHE_TTL_SECONDS = 300  # 5 minutes
 
 # Public API key embedded in the DICE web app
 import os
-_API_KEY = os.environ.get("DICE_API_KEY", "DICE_KEY_REDACTED")
+_API_KEY = os.environ.get("DICE_API_KEY", "")
 
 # DICE city IDs for UK cities
 _CITY_IDS = {
