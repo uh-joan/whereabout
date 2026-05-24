@@ -1,5 +1,19 @@
 [
   {
+    "source_id": "venue_effra_social",
+    "name": "Effra Social",
+    "postcode": "SW2 1EB",
+    "url": "https://www.effrasocial.co.uk/events",
+    "default_time": "20:00",
+    "genres": [
+      "electronic",
+      "soul",
+      "afrobeats",
+      "r&b",
+      "house"
+    ]
+  },
+  {
     "source_id": "venue_southbank_centre",
     "name": "Southbank Centre",
     "postcode": "SE1 8XX",
