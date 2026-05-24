@@ -25,8 +25,12 @@ class UserConfig(BaseModel):
         return cls(**data)
 
     def save(self) -> None:
-        CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
-        CONFIG_PATH.write_bytes(tomli_w.dumps(self.model_dump()).encode())
+        import os
+        CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        data = tomli_w.dumps(self.model_dump()).encode()
+        fd = os.open(str(CONFIG_PATH), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "wb") as f:
+            f.write(data)
 
     def is_first_run(self) -> bool:
         return not CONFIG_PATH.exists() or not self.home_neighbourhood

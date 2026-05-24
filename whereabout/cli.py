@@ -285,30 +285,16 @@ _PLIST_LABEL = "com.whereabout.refresh"
 _PLIST_PATH = Path.home() / "Library" / "LaunchAgents" / f"{_PLIST_LABEL}.plist"
 
 
-def _plist_content(binary: str, interval: int, log_dir: Path) -> str:
-    return f"""<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>{_PLIST_LABEL}</string>
-    <key>ProgramArguments</key>
-    <array>
-        <string>{binary}</string>
-        <string>refresh</string>
-        <string>--browser</string>
-    </array>
-    <key>StartInterval</key>
-    <integer>{interval}</integer>
-    <key>RunAtLoad</key>
-    <true/>
-    <key>StandardOutPath</key>
-    <string>{log_dir / "refresh.log"}</string>
-    <key>StandardErrorPath</key>
-    <string>{log_dir / "refresh.err"}</string>
-</dict>
-</plist>
-"""
+def _plist_content(binary: str, interval: int, log_dir: Path) -> bytes:
+    import plistlib
+    return plistlib.dumps({
+        "Label": _PLIST_LABEL,
+        "ProgramArguments": [binary, "refresh", "--browser"],
+        "StartInterval": interval,
+        "RunAtLoad": True,
+        "StandardOutPath": str(log_dir / "refresh.log"),
+        "StandardErrorPath": str(log_dir / "refresh.err"),
+    })
 
 
 @schedule_app.command("install")
@@ -328,7 +314,7 @@ def schedule_install(
     log_dir.mkdir(parents=True, exist_ok=True)
 
     _PLIST_PATH.parent.mkdir(parents=True, exist_ok=True)
-    _PLIST_PATH.write_text(_plist_content(binary, interval_hours * 3600, log_dir))
+    _PLIST_PATH.write_bytes(_plist_content(binary, interval_hours * 3600, log_dir))
 
     # Unload first in case it's already loaded
     subprocess.run(["launchctl", "unload", str(_PLIST_PATH)], capture_output=True)

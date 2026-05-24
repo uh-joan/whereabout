@@ -40,7 +40,7 @@ class OsloHackneySource(BaseSource):
 
     def _fetch_sync(self, query: Query) -> list[RawEvent]:
         try:
-            r = httpx.get(_URL, headers=_HEADERS, timeout=10, follow_redirects=True, verify=False)
+            r = httpx.get(_URL, headers=_HEADERS, timeout=10, follow_redirects=True)
             r.raise_for_status()
         except Exception:
             return []

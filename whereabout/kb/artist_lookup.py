@@ -22,7 +22,7 @@ def _expand_genres(genres: list[str]) -> set[str]:
 
 # Last.fm public API key — register your own at https://www.last.fm/api/account/create
 _LASTFM_API_KEY = os.environ.get("LASTFM_API_KEY", "LASTFM_KEY_REDACTED")
-_LASTFM_URL = "http://ws.audioscrobbler.com/2.0/"
+_LASTFM_URL = "https://ws.audioscrobbler.com/2.0/"
 
 _RA_GRAPHQL_URL = "https://ra.co/graphql"
 _RA_HEADERS = {

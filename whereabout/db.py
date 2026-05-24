@@ -9,7 +9,7 @@ DB_PATH = Path.home() / ".local" / "share" / "whereabout" / "whereabout.db"
 
 @contextmanager
 def get_connection():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     conn = sqlite3.connect(str(DB_PATH))
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
