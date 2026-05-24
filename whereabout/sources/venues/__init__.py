@@ -16,6 +16,11 @@ from whereabout.sources.venues.scala import ScalaSource
 from whereabout.sources.venues.lexington import LexingtonSource
 from whereabout.sources.venues.rich_mix import RichMixSource
 from whereabout.sources.venues.dingwalls import DingwallsSource
+from whereabout.sources.venues.xoyo import XoyoSource
+from whereabout.sources.venues.lso_st_lukes import LsoStLukesSource
+from whereabout.sources.venues.wigmore_hall import WigmoreHallSource
+from whereabout.sources.venues.amersham_arms import AmershamArmsSource
+from whereabout.sources.venues.paper_dress import PaperDressSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -36,4 +41,9 @@ ALL_VENUE_SOURCES = [
     LexingtonSource(),
     RichMixSource(),
     DingwallsSource(),
+    XoyoSource(),
+    LsoStLukesSource(),
+    WigmoreHallSource(),
+    AmershamArmsSource(),
+    PaperDressSource(),
 ]

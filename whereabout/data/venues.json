@@ -142,5 +142,45 @@
     "url": "https://dingwalls.com/",
     "default_time": "19:30",
     "genres": ["rock", "indie", "pop"]
+  },
+  {
+    "source_id": "venue_xoyo",
+    "name": "XOYO",
+    "postcode": "EC1R 4QD",
+    "url": "https://www.xoyo.co.uk/whats-on",
+    "default_time": "22:00",
+    "genres": ["electronic", "house", "techno", "drum-and-bass"]
+  },
+  {
+    "source_id": "venue_lso_st_lukes",
+    "name": "LSO St Luke's",
+    "postcode": "EC1V 8DS",
+    "url": "https://www.lso.co.uk/whats-on/",
+    "default_time": "19:00",
+    "genres": ["classical"]
+  },
+  {
+    "source_id": "venue_wigmore_hall",
+    "name": "Wigmore Hall",
+    "postcode": "W1U 2BP",
+    "url": "https://wigmore-hall.org.uk/whats-on/",
+    "default_time": "19:30",
+    "genres": ["classical", "chamber"]
+  },
+  {
+    "source_id": "venue_amersham_arms",
+    "name": "Amersham Arms",
+    "postcode": "SE14 6TH",
+    "url": "https://www.amershamarms.co.uk/events/",
+    "default_time": "20:00",
+    "genres": ["indie", "rock", "alternative", "electronic"]
+  },
+  {
+    "source_id": "venue_paper_dress",
+    "name": "Paper Dress Vintage",
+    "postcode": "E8 3DU",
+    "url": "https://www.paperdressvintage.co.uk/by-night",
+    "default_time": "20:00",
+    "genres": ["indie", "electronic", "alternative"]
   }
 ]
