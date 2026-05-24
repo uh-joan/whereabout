@@ -69,7 +69,13 @@
     "postcode": "SW2 1DF",
     "url": "https://hootanannybrixton.co.uk/",
     "default_time": "20:00",
-    "genres": []
+    "genres": [
+      "reggae",
+      "ska",
+      "world",
+      "indie",
+      "folk"
+    ]
   },
   {
     "source_id": "venue_jazz_cafe",
@@ -403,7 +409,12 @@
     "postcode": "WC1R 4RL",
     "url": "https://www.conwayhall.org.uk/whats-on/",
     "default_time": "18:30",
-    "genres": ["classical", "chamber", "folk", "world"]
+    "genres": [
+      "classical",
+      "chamber",
+      "folk",
+      "world"
+    ]
   },
   {
     "source_id": "venue_boisdale",
@@ -411,7 +422,12 @@
     "postcode": "E14 5AX",
     "url": "https://www.boisdale.co.uk/restaurant/canary-wharf",
     "default_time": "20:00",
-    "genres": ["jazz", "soul", "r&b", "blues"]
+    "genres": [
+      "jazz",
+      "soul",
+      "r&b",
+      "blues"
+    ]
   },
   {
     "source_id": "venue_underworld_camden",
@@ -419,7 +435,13 @@
     "postcode": "NW1 8AH",
     "url": "https://www.theunderworldcamden.co.uk/",
     "default_time": "19:00",
-    "genres": ["metal", "punk", "rock", "alternative", "indie"]
+    "genres": [
+      "metal",
+      "punk",
+      "rock",
+      "alternative",
+      "indie"
+    ]
   },
   {
     "source_id": "venue_o2_shepherds_bush_empire",
@@ -427,6 +449,12 @@
     "postcode": "W12 8TT",
     "url": "https://www.o2shepherdsbushempire.co.uk/",
     "default_time": "19:30",
-    "genres": ["rock", "pop", "indie", "alternative", "soul"]
+    "genres": [
+      "rock",
+      "pop",
+      "indie",
+      "alternative",
+      "soul"
+    ]
   }
 ]

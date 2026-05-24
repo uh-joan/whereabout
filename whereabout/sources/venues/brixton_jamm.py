@@ -57,7 +57,7 @@ class BrixtonJammSource(BaseSource):
                     date_start_utc=dt_utc,
                     venue_name=_VENUE,
                     venue_postcode=_POSTCODE,
-                    genres_raw=[],
+                    genres_raw=_CFG["genres"],
                     ticket_url=source_url,
                     raw_payload={},
                 ))

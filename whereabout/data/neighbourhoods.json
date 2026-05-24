@@ -2,11 +2,22 @@
   {
     "name": "Brixton",
     "borough": "Lambeth",
-    "postcode_prefixes": ["SW2", "SW9"],
+    "postcode_prefixes": [
+      "SW2",
+      "SW9"
+    ],
     "lat": 51.4613,
     "lng": -0.1156,
-    "aliases": ["brixton hill", "loughborough junction"],
-    "ward_aliases": ["Brixton Windrush", "Brixton Acre Lane", "Brixton Rush Common", "Coldharbour"]
+    "aliases": [
+      "brixton hill",
+      "loughborough junction"
+    ],
+    "ward_aliases": [
+      "Brixton Windrush",
+      "Brixton Acre Lane",
+      "Brixton Rush Common",
+      "Coldharbour"
+    ]
   },
   {
     "name": "Stockwell",
@@ -14,287 +25,553 @@
     "postcode_prefixes": [],
     "lat": 51.4723,
     "lng": -0.1232,
-    "aliases": ["stockwell"],
-    "ward_aliases": ["Stockwell"]
+    "aliases": [
+      "stockwell"
+    ],
+    "ward_aliases": [
+      "Stockwell"
+    ]
   },
   {
     "name": "Oval",
     "borough": "Lambeth",
     "postcode_prefixes": [],
-    "lat": 51.4810,
+    "lat": 51.481,
     "lng": -0.1128,
-    "aliases": ["oval"],
-    "ward_aliases": ["Oval"]
+    "aliases": [
+      "oval"
+    ],
+    "ward_aliases": [
+      "Oval"
+    ]
   },
   {
     "name": "Camden",
     "borough": "Camden",
-    "postcode_prefixes": ["NW1"],
-    "lat": 51.5390,
+    "postcode_prefixes": [
+      "NW1"
+    ],
+    "lat": 51.539,
     "lng": -0.1426,
-    "aliases": ["camden town", "camden market"],
-    "ward_aliases": ["Camden Town with Primrose Hill", "Haverstock", "Regent's Park"]
+    "aliases": [
+      "camden town",
+      "camden market"
+    ],
+    "ward_aliases": [
+      "Camden Town with Primrose Hill",
+      "Haverstock",
+      "Regent's Park"
+    ]
   },
   {
     "name": "Dalston",
     "borough": "Hackney",
-    "postcode_prefixes": ["E8"],
+    "postcode_prefixes": [
+      "E8"
+    ],
     "lat": 51.5465,
     "lng": -0.0757,
-    "aliases": ["hackney", "dalston junction", "dalston kingsland"],
-    "ward_aliases": ["Dalston", "Hackney Central"]
+    "aliases": [
+      "hackney",
+      "dalston junction",
+      "dalston kingsland"
+    ],
+    "ward_aliases": [
+      "Dalston",
+      "Hackney Central"
+    ]
   },
   {
     "name": "Shoreditch",
     "borough": "Hackney",
-    "postcode_prefixes": ["EC2A", "E1", "EC1V"],
+    "postcode_prefixes": [
+      "EC2A",
+      "E1",
+      "EC1V"
+    ],
     "lat": 51.5227,
     "lng": -0.0792,
-    "aliases": ["shoreditch high street", "old street"],
-    "ward_aliases": ["Hoxton East and Shoreditch", "Hoxton West"]
+    "aliases": [
+      "shoreditch high street",
+      "old street"
+    ],
+    "ward_aliases": [
+      "Hoxton East and Shoreditch",
+      "Hoxton West"
+    ]
   },
   {
     "name": "Peckham",
     "borough": "Southwark",
-    "postcode_prefixes": ["SE15"],
-    "lat": 51.4740,
+    "postcode_prefixes": [
+      "SE15"
+    ],
+    "lat": 51.474,
     "lng": -0.0694,
-    "aliases": ["peckham rye", "nunhead"],
-    "ward_aliases": ["Peckham", "Nunhead and Queens Road"]
+    "aliases": [
+      "peckham rye",
+      "nunhead"
+    ],
+    "ward_aliases": [
+      "Peckham",
+      "Nunhead and Queens Road"
+    ]
   },
   {
     "name": "Hackney",
     "borough": "Hackney",
-    "postcode_prefixes": ["E9"],
-    "lat": 51.5450,
+    "postcode_prefixes": [
+      "E9"
+    ],
+    "lat": 51.545,
     "lng": -0.0553,
-    "aliases": ["hackney central", "hackney wick"],
-    "ward_aliases": ["Hackney Central", "Victoria"]
+    "aliases": [
+      "hackney central",
+      "hackney wick"
+    ],
+    "ward_aliases": [
+      "Hackney Central",
+      "Victoria"
+    ]
   },
   {
     "name": "Islington",
     "borough": "Islington",
-    "postcode_prefixes": ["N1"],
+    "postcode_prefixes": [
+      "N1"
+    ],
     "lat": 51.5362,
     "lng": -0.1033,
-    "aliases": ["angel", "upper street", "highbury"],
-    "ward_aliases": ["Highbury East", "Highbury West", "Canonbury", "Junction"]
+    "aliases": [
+      "angel",
+      "upper street",
+      "highbury"
+    ],
+    "ward_aliases": [
+      "Highbury East",
+      "Highbury West",
+      "Canonbury",
+      "Junction"
+    ]
   },
   {
     "name": "Soho",
     "borough": "Westminster",
-    "postcode_prefixes": ["W1D", "W1F", "W1B"],
+    "postcode_prefixes": [
+      "W1D",
+      "W1F",
+      "W1B",
+      "W1U",
+      "W1W",
+      "W1G"
+    ],
     "lat": 51.5137,
     "lng": -0.1337,
-    "aliases": ["ronnie scotts", "carnaby", "west end"],
-    "ward_aliases": ["West End", "Soho"]
+    "aliases": [
+      "ronnie scotts",
+      "carnaby",
+      "west end"
+    ],
+    "ward_aliases": [
+      "West End",
+      "Soho"
+    ]
   },
   {
     "name": "Notting Hill",
     "borough": "Kensington and Chelsea",
-    "postcode_prefixes": ["W11"],
+    "postcode_prefixes": [
+      "W11"
+    ],
     "lat": 51.5088,
     "lng": -0.2025,
-    "aliases": ["portobello", "notting hill gate", "ladbroke grove"],
-    "ward_aliases": ["Notting Dale", "Pembridge"]
+    "aliases": [
+      "portobello",
+      "notting hill gate",
+      "ladbroke grove"
+    ],
+    "ward_aliases": [
+      "Notting Dale",
+      "Pembridge"
+    ]
   },
   {
     "name": "Bethnal Green",
     "borough": "Tower Hamlets",
-    "postcode_prefixes": ["E2"],
+    "postcode_prefixes": [
+      "E2"
+    ],
     "lat": 51.5272,
     "lng": -0.0549,
-    "aliases": ["bethnal green road", "columbia road"],
-    "ward_aliases": ["Bethnal Green North", "Bethnal Green South"]
+    "aliases": [
+      "bethnal green road",
+      "columbia road"
+    ],
+    "ward_aliases": [
+      "Bethnal Green North",
+      "Bethnal Green South"
+    ]
   },
   {
     "name": "Stoke Newington",
     "borough": "Hackney",
-    "postcode_prefixes": ["N16"],
+    "postcode_prefixes": [
+      "N16"
+    ],
     "lat": 51.5627,
     "lng": -0.0737,
-    "aliases": ["stokey", "clissold"],
-    "ward_aliases": ["Stoke Newington", "Clissold"]
+    "aliases": [
+      "stokey",
+      "clissold"
+    ],
+    "ward_aliases": [
+      "Stoke Newington",
+      "Clissold"
+    ]
   },
   {
     "name": "Streatham",
     "borough": "Lambeth",
-    "postcode_prefixes": ["SW16"],
+    "postcode_prefixes": [
+      "SW16"
+    ],
     "lat": 51.4267,
     "lng": -0.1218,
-    "aliases": ["streatham hill", "streatham common", "streatham vale"],
-    "ward_aliases": ["Streatham Hill", "Streatham South", "Streatham Wells"]
+    "aliases": [
+      "streatham hill",
+      "streatham common",
+      "streatham vale"
+    ],
+    "ward_aliases": [
+      "Streatham Hill",
+      "Streatham South",
+      "Streatham Wells"
+    ]
   },
   {
     "name": "Clapham",
     "borough": "Lambeth",
-    "postcode_prefixes": ["SW4"],
+    "postcode_prefixes": [
+      "SW4"
+    ],
     "lat": 51.4618,
-    "lng": -0.1380,
-    "aliases": ["clapham common", "clapham north", "clapham south", "clapham junction"],
-    "ward_aliases": ["Clapham Common", "Clapham Thornton"]
+    "lng": -0.138,
+    "aliases": [
+      "clapham common",
+      "clapham north",
+      "clapham south",
+      "clapham junction"
+    ],
+    "ward_aliases": [
+      "Clapham Common",
+      "Clapham Thornton"
+    ]
   },
   {
     "name": "Tottenham",
     "borough": "Haringey",
-    "postcode_prefixes": ["N17"],
-    "lat": 51.5880,
+    "postcode_prefixes": [
+      "N17"
+    ],
+    "lat": 51.588,
     "lng": -0.0723,
-    "aliases": ["tottenham hale", "white hart lane", "seven sisters"],
-    "ward_aliases": ["Tottenham Hale", "White Hart Lane", "Northumberland Park"]
+    "aliases": [
+      "tottenham hale",
+      "white hart lane",
+      "seven sisters"
+    ],
+    "ward_aliases": [
+      "Tottenham Hale",
+      "White Hart Lane",
+      "Northumberland Park"
+    ]
   },
   {
     "name": "Lewisham",
     "borough": "Lewisham",
-    "postcode_prefixes": ["SE13"],
+    "postcode_prefixes": [
+      "SE13"
+    ],
     "lat": 51.4614,
     "lng": -0.0137,
-    "aliases": ["lewisham centre"],
-    "ward_aliases": ["Lewisham Central", "Ladywell"]
+    "aliases": [
+      "lewisham centre"
+    ],
+    "ward_aliases": [
+      "Lewisham Central",
+      "Ladywell"
+    ]
   },
   {
     "name": "Greenwich",
     "borough": "Greenwich",
-    "postcode_prefixes": ["SE10"],
+    "postcode_prefixes": [
+      "SE10"
+    ],
     "lat": 51.4826,
     "lng": -0.0076,
-    "aliases": ["greenwich village", "cutty sark"],
-    "ward_aliases": ["Greenwich West", "Peninsula"]
+    "aliases": [
+      "greenwich village",
+      "cutty sark"
+    ],
+    "ward_aliases": [
+      "Greenwich West",
+      "Peninsula"
+    ]
   },
   {
     "name": "Bermondsey",
     "borough": "Southwark",
-    "postcode_prefixes": ["SE1"],
+    "postcode_prefixes": [
+      "SE1"
+    ],
     "lat": 51.4995,
     "lng": -0.0642,
-    "aliases": ["bermondsey street", "london bridge"],
-    "ward_aliases": ["Bermondsey", "London Bridge and West Bermondsey"]
+    "aliases": [
+      "bermondsey street",
+      "london bridge"
+    ],
+    "ward_aliases": [
+      "Bermondsey",
+      "London Bridge and West Bermondsey"
+    ]
   },
   {
     "name": "Elephant and Castle",
     "borough": "Southwark",
-    "postcode_prefixes": ["SE17"],
+    "postcode_prefixes": [
+      "SE17"
+    ],
     "lat": 51.4957,
     "lng": -0.1006,
-    "aliases": ["elephant", "castle", "walworth"],
-    "ward_aliases": ["Faraday", "Newington"]
+    "aliases": [
+      "elephant",
+      "castle",
+      "walworth"
+    ],
+    "ward_aliases": [
+      "Faraday",
+      "Newington"
+    ]
   },
   {
     "name": "Deptford",
     "borough": "Lewisham",
-    "postcode_prefixes": ["SE8"],
-    "lat": 51.4780,
+    "postcode_prefixes": [
+      "SE8"
+    ],
+    "lat": 51.478,
     "lng": -0.0248,
-    "aliases": ["deptford bridge"],
-    "ward_aliases": ["Deptford"]
+    "aliases": [
+      "deptford bridge"
+    ],
+    "ward_aliases": [
+      "Deptford"
+    ]
   },
   {
     "name": "Finsbury Park",
     "borough": "Islington",
-    "postcode_prefixes": ["N4"],
+    "postcode_prefixes": [
+      "N4"
+    ],
     "lat": 51.5642,
     "lng": -0.1065,
-    "aliases": ["manor house", "stroud green"],
-    "ward_aliases": ["Finsbury Park", "Stroud Green"]
+    "aliases": [
+      "manor house",
+      "stroud green"
+    ],
+    "ward_aliases": [
+      "Finsbury Park",
+      "Stroud Green"
+    ]
   },
   {
     "name": "Kilburn",
     "borough": "Brent",
-    "postcode_prefixes": ["NW6"],
+    "postcode_prefixes": [
+      "NW6"
+    ],
     "lat": 51.5498,
     "lng": -0.1948,
-    "aliases": ["west kilburn", "queens park"],
-    "ward_aliases": ["Kilburn", "Queen's Park"]
+    "aliases": [
+      "west kilburn",
+      "queens park"
+    ],
+    "ward_aliases": [
+      "Kilburn",
+      "Queen's Park"
+    ]
   },
   {
     "name": "Archway",
     "borough": "Islington",
-    "postcode_prefixes": ["N19"],
+    "postcode_prefixes": [
+      "N19"
+    ],
     "lat": 51.5657,
     "lng": -0.1345,
-    "aliases": ["tufnell park", "upper holloway"],
-    "ward_aliases": ["Junction", "Hillrise"]
+    "aliases": [
+      "tufnell park",
+      "upper holloway"
+    ],
+    "ward_aliases": [
+      "Junction",
+      "Hillrise"
+    ]
   },
   {
     "name": "Crouch End",
     "borough": "Haringey",
-    "postcode_prefixes": ["N8"],
+    "postcode_prefixes": [
+      "N8"
+    ],
     "lat": 51.5818,
     "lng": -0.1188,
-    "aliases": ["hornsey", "alexandra palace"],
-    "ward_aliases": ["Crouch End", "Hornsey"]
+    "aliases": [
+      "hornsey",
+      "alexandra palace"
+    ],
+    "ward_aliases": [
+      "Crouch End",
+      "Hornsey"
+    ]
   },
   {
     "name": "Walthamstow",
     "borough": "Waltham Forest",
-    "postcode_prefixes": ["E17"],
+    "postcode_prefixes": [
+      "E17"
+    ],
     "lat": 51.5821,
     "lng": -0.0206,
-    "aliases": ["walthamstow village", "walthamstow central"],
-    "ward_aliases": ["Walthamstow Village", "High Street"]
+    "aliases": [
+      "walthamstow village",
+      "walthamstow central"
+    ],
+    "ward_aliases": [
+      "Walthamstow Village",
+      "High Street"
+    ]
   },
   {
     "name": "Forest Hill",
     "borough": "Lewisham",
-    "postcode_prefixes": ["SE23"],
+    "postcode_prefixes": [
+      "SE23"
+    ],
     "lat": 51.4393,
     "lng": -0.0526,
-    "aliases": ["honor oak", "sydenham"],
-    "ward_aliases": ["Forest Hill", "Honor Oak Park"]
+    "aliases": [
+      "honor oak",
+      "sydenham"
+    ],
+    "ward_aliases": [
+      "Forest Hill",
+      "Honor Oak Park"
+    ]
   },
   {
     "name": "Crystal Palace",
     "borough": "Bromley",
-    "postcode_prefixes": ["SE19"],
+    "postcode_prefixes": [
+      "SE19"
+    ],
     "lat": 51.4182,
     "lng": -0.0741,
-    "aliases": ["upper norwood", "anerley"],
-    "ward_aliases": ["Crystal Palace", "Penge and Cator"]
+    "aliases": [
+      "upper norwood",
+      "anerley"
+    ],
+    "ward_aliases": [
+      "Crystal Palace",
+      "Penge and Cator"
+    ]
   },
   {
     "name": "Balham",
     "borough": "Wandsworth",
-    "postcode_prefixes": ["SW12"],
+    "postcode_prefixes": [
+      "SW12"
+    ],
     "lat": 51.4434,
     "lng": -0.1527,
-    "aliases": ["balham high road", "bedford hill"],
-    "ward_aliases": ["Balham"]
+    "aliases": [
+      "balham high road",
+      "bedford hill"
+    ],
+    "ward_aliases": [
+      "Balham"
+    ]
   },
   {
     "name": "Tooting",
     "borough": "Wandsworth",
-    "postcode_prefixes": ["SW17"],
-    "lat": 51.4270,
+    "postcode_prefixes": [
+      "SW17"
+    ],
+    "lat": 51.427,
     "lng": -0.1676,
-    "aliases": ["tooting bec", "tooting broadway", "colliers wood"],
-    "ward_aliases": ["Tooting", "Graveney"]
+    "aliases": [
+      "tooting bec",
+      "tooting broadway",
+      "colliers wood"
+    ],
+    "ward_aliases": [
+      "Tooting",
+      "Graveney"
+    ]
   },
   {
     "name": "Battersea",
     "borough": "Wandsworth",
-    "postcode_prefixes": ["SW11"],
+    "postcode_prefixes": [
+      "SW11"
+    ],
     "lat": 51.4771,
     "lng": -0.1589,
-    "aliases": ["battersea power station", "nine elms"],
-    "ward_aliases": ["Latchmere", "Queenstown"]
+    "aliases": [
+      "battersea power station",
+      "nine elms"
+    ],
+    "ward_aliases": [
+      "Latchmere",
+      "Queenstown"
+    ]
   },
   {
     "name": "Vauxhall",
     "borough": "Lambeth",
-    "postcode_prefixes": ["SW8"],
+    "postcode_prefixes": [
+      "SW8"
+    ],
     "lat": 51.4859,
     "lng": -0.1221,
-    "aliases": ["vauxhall cross", "nine elms south"],
-    "ward_aliases": ["Vassall", "Stockwell"]
+    "aliases": [
+      "vauxhall cross",
+      "nine elms south"
+    ],
+    "ward_aliases": [
+      "Vassall",
+      "Stockwell"
+    ]
   },
   {
     "name": "Kennington",
     "borough": "Lambeth",
-    "postcode_prefixes": ["SE11"],
+    "postcode_prefixes": [
+      "SE11"
+    ],
     "lat": 51.4895,
     "lng": -0.1072,
-    "aliases": ["kennington park", "oval station"],
-    "ward_aliases": ["Oval", "Vassall"]
+    "aliases": [
+      "kennington park",
+      "oval station"
+    ],
+    "ward_aliases": [
+      "Oval",
+      "Vassall"
+    ]
   },
   {
     "name": "Waterloo",
@@ -302,8 +579,15 @@
     "postcode_prefixes": [],
     "lat": 51.5035,
     "lng": -0.1138,
-    "aliases": ["south bank", "lambeth north", "cut"],
-    "ward_aliases": ["Bishop's", "Waterloo"]
+    "aliases": [
+      "south bank",
+      "lambeth north",
+      "cut"
+    ],
+    "ward_aliases": [
+      "Bishop's",
+      "Waterloo"
+    ]
   },
   {
     "name": "Borough",
@@ -311,26 +595,46 @@
     "postcode_prefixes": [],
     "lat": 51.5006,
     "lng": -0.0947,
-    "aliases": ["borough market", "london bridge south"],
-    "ward_aliases": ["London Bridge and West Bermondsey", "Chaucer"]
+    "aliases": [
+      "borough market",
+      "london bridge south"
+    ],
+    "ward_aliases": [
+      "London Bridge and West Bermondsey",
+      "Chaucer"
+    ]
   },
   {
     "name": "Whitechapel",
     "borough": "Tower Hamlets",
     "postcode_prefixes": [],
-    "lat": 51.5180,
-    "lng": -0.0610,
-    "aliases": ["whitechapel road", "aldgate east"],
-    "ward_aliases": ["Whitechapel", "Stepney Green"]
+    "lat": 51.518,
+    "lng": -0.061,
+    "aliases": [
+      "whitechapel road",
+      "aldgate east"
+    ],
+    "ward_aliases": [
+      "Whitechapel",
+      "Stepney Green"
+    ]
   },
   {
     "name": "Mile End",
     "borough": "Tower Hamlets",
-    "postcode_prefixes": ["E3"],
+    "postcode_prefixes": [
+      "E3"
+    ],
     "lat": 51.5253,
-    "lng": -0.0330,
-    "aliases": ["mile end park", "bow road"],
-    "ward_aliases": ["Mile End East", "Mile End and Globe Town"]
+    "lng": -0.033,
+    "aliases": [
+      "mile end park",
+      "bow road"
+    ],
+    "ward_aliases": [
+      "Mile End East",
+      "Mile End and Globe Town"
+    ]
   },
   {
     "name": "Bow",
@@ -338,17 +642,32 @@
     "postcode_prefixes": [],
     "lat": 51.5267,
     "lng": -0.0228,
-    "aliases": ["bow common", "bromley by bow"],
-    "ward_aliases": ["Bow East", "Bow West"]
+    "aliases": [
+      "bow common",
+      "bromley by bow"
+    ],
+    "ward_aliases": [
+      "Bow East",
+      "Bow West"
+    ]
   },
   {
     "name": "Clapton",
     "borough": "Hackney",
-    "postcode_prefixes": ["E5"],
+    "postcode_prefixes": [
+      "E5"
+    ],
     "lat": 51.5596,
     "lng": -0.0543,
-    "aliases": ["upper clapton", "lower clapton", "clapton pond"],
-    "ward_aliases": ["Lea Bridge", "Homerton"]
+    "aliases": [
+      "upper clapton",
+      "lower clapton",
+      "clapton pond"
+    ],
+    "ward_aliases": [
+      "Lea Bridge",
+      "Homerton"
+    ]
   },
   {
     "name": "Homerton",
@@ -356,88 +675,237 @@
     "postcode_prefixes": [],
     "lat": 51.5476,
     "lng": -0.0442,
-    "aliases": ["hackney marshes", "homerton hospital"],
-    "ward_aliases": ["Homerton", "Hackney Wick"]
+    "aliases": [
+      "hackney marshes",
+      "homerton hospital"
+    ],
+    "ward_aliases": [
+      "Homerton",
+      "Hackney Wick"
+    ]
   },
   {
     "name": "Farringdon",
     "borough": "Islington",
-    "postcode_prefixes": ["EC1A", "EC1M", "EC1R"],
+    "postcode_prefixes": [
+      "EC1A",
+      "EC1M",
+      "EC1R",
+      "WC1R"
+    ],
     "lat": 51.5196,
-    "lng": -0.1050,
-    "aliases": ["clerkenwell", "barbican", "smithfield", "exmouth market"],
-    "ward_aliases": ["Clerkenwell", "Bunhill"]
+    "lng": -0.105,
+    "aliases": [
+      "clerkenwell",
+      "barbican",
+      "smithfield",
+      "exmouth market"
+    ],
+    "ward_aliases": [
+      "Clerkenwell",
+      "Bunhill"
+    ]
   },
   {
     "name": "Kentish Town",
     "borough": "Camden",
-    "postcode_prefixes": ["NW5"],
+    "postcode_prefixes": [
+      "NW5"
+    ],
     "lat": 51.5504,
     "lng": -0.1426,
-    "aliases": ["gospel oak", "tufnell park"],
-    "ward_aliases": ["Kentish Town", "Gospel Oak", "Tufnell Park"]
+    "aliases": [
+      "gospel oak",
+      "tufnell park"
+    ],
+    "ward_aliases": [
+      "Kentish Town",
+      "Gospel Oak",
+      "Tufnell Park"
+    ]
   },
   {
     "name": "Highbury",
     "borough": "Islington",
-    "postcode_prefixes": ["N5"],
+    "postcode_prefixes": [
+      "N5"
+    ],
     "lat": 51.5527,
     "lng": -0.0985,
-    "aliases": ["arsenal", "highbury and islington", "canonbury"],
-    "ward_aliases": ["Highbury East", "Highbury West", "Canonbury"]
+    "aliases": [
+      "arsenal",
+      "highbury and islington",
+      "canonbury"
+    ],
+    "ward_aliases": [
+      "Highbury East",
+      "Highbury West",
+      "Canonbury"
+    ]
   },
   {
     "name": "Chelsea",
     "borough": "Kensington and Chelsea",
-    "postcode_prefixes": ["SW10", "SW3"],
+    "postcode_prefixes": [
+      "SW10",
+      "SW3",
+      "SW1X"
+    ],
     "lat": 51.4832,
     "lng": -0.1696,
-    "aliases": ["world's end", "chelsea harbour", "fulham road"],
-    "ward_aliases": ["Cremorne", "Chelsea Riverside"]
+    "aliases": [
+      "world's end",
+      "chelsea harbour",
+      "fulham road"
+    ],
+    "ward_aliases": [
+      "Cremorne",
+      "Chelsea Riverside"
+    ]
   },
   {
     "name": "New Cross",
     "borough": "Lewisham",
-    "postcode_prefixes": ["SE14"],
-    "lat": 51.4780,
-    "lng": -0.0420,
-    "aliases": ["new cross gate", "telegraph hill", "brockley"],
-    "ward_aliases": ["New Cross", "Telegraph Hill"]
+    "postcode_prefixes": [
+      "SE14"
+    ],
+    "lat": 51.478,
+    "lng": -0.042,
+    "aliases": [
+      "new cross gate",
+      "telegraph hill",
+      "brockley"
+    ],
+    "ward_aliases": [
+      "New Cross",
+      "Telegraph Hill"
+    ]
   },
   {
     "name": "Canning Town",
     "borough": "Newham",
-    "postcode_prefixes": ["E16"],
+    "postcode_prefixes": [
+      "E16"
+    ],
     "lat": 51.5141,
     "lng": 0.0057,
-    "aliases": ["custom house", "royal docks", "silvertown"],
-    "ward_aliases": ["Canning Town North", "Canning Town South"]
+    "aliases": [
+      "custom house",
+      "royal docks",
+      "silvertown"
+    ],
+    "ward_aliases": [
+      "Canning Town North",
+      "Canning Town South"
+    ]
   },
   {
     "name": "Holloway",
     "borough": "Islington",
-    "postcode_prefixes": ["N7"],
+    "postcode_prefixes": [
+      "N7"
+    ],
     "lat": 51.5567,
     "lng": -0.1165,
-    "aliases": ["lower holloway", "caledonian road", "tufnell park"],
-    "ward_aliases": ["Holloway", "Junction"]
+    "aliases": [
+      "lower holloway",
+      "caledonian road",
+      "tufnell park"
+    ],
+    "ward_aliases": [
+      "Holloway",
+      "Junction"
+    ]
   },
   {
     "name": "Herne Hill",
     "borough": "Lambeth",
-    "postcode_prefixes": ["SE24"],
+    "postcode_prefixes": [
+      "SE24"
+    ],
     "lat": 51.4536,
     "lng": -0.1015,
-    "aliases": ["tulse hill", "brockwell park", "dulwich road"],
-    "ward_aliases": ["Herne Hill", "Tulse Hill"]
+    "aliases": [
+      "tulse hill",
+      "brockwell park",
+      "dulwich road"
+    ],
+    "ward_aliases": [
+      "Herne Hill",
+      "Tulse Hill"
+    ]
   },
   {
     "name": "Covent Garden",
     "borough": "Westminster",
-    "postcode_prefixes": ["WC2H", "WC2E", "WC2R"],
+    "postcode_prefixes": [
+      "WC2H",
+      "WC2E",
+      "WC2R",
+      "WC2N"
+    ],
     "lat": 51.5117,
-    "lng": -0.1240,
-    "aliases": ["seven dials", "strand", "leicester square"],
-    "ward_aliases": ["St James's", "West End"]
+    "lng": -0.124,
+    "aliases": [
+      "seven dials",
+      "strand",
+      "leicester square"
+    ],
+    "ward_aliases": [
+      "St James's",
+      "West End"
+    ]
+  },
+  {
+    "name": "Wood Green",
+    "borough": "Haringey",
+    "postcode_prefixes": [
+      "N22",
+      "N8"
+    ],
+    "lat": 51.5944,
+    "lng": -0.1098,
+    "aliases": [
+      "alexandra palace",
+      "ally pally"
+    ],
+    "ward_aliases": [
+      "Alexandra",
+      "Noel Park"
+    ]
+  },
+  {
+    "name": "Canary Wharf",
+    "borough": "Tower Hamlets",
+    "postcode_prefixes": [
+      "E14"
+    ],
+    "lat": 51.5054,
+    "lng": -0.0235,
+    "aliases": [
+      "isle of dogs",
+      "docklands"
+    ],
+    "ward_aliases": [
+      "Canary Wharf",
+      "Island Gardens"
+    ]
+  },
+  {
+    "name": "Shepherd's Bush",
+    "borough": "Hammersmith and Fulham",
+    "postcode_prefixes": [
+      "W12",
+      "W6"
+    ],
+    "lat": 51.5042,
+    "lng": -0.2241,
+    "aliases": [
+      "shepherds bush",
+      "west london"
+    ],
+    "ward_aliases": [
+      "Shepherd's Bush Green"
+    ]
   }
 ]
