@@ -370,5 +370,18 @@
       "jazz",
       "african"
     ]
+  },
+  {
+    "source_id": "venue_hackney_empire",
+    "name": "Hackney Empire",
+    "postcode": "E8 1EJ",
+    "url": "https://www.hackneyempire.co.uk/whats-on/category/live-music",
+    "default_time": "19:30",
+    "genres": [
+      "soul",
+      "r&b",
+      "world",
+      "pop"
+    ]
   }
 ]

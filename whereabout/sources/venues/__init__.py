@@ -30,6 +30,7 @@ from whereabout.sources.venues.alexandra_palace import AlexandraPalaceSource
 from whereabout.sources.venues.green_note import GreenNoteSource
 from whereabout.sources.venues.cecil_sharp_house import CecilSharpHouseSource
 from whereabout.sources.venues.africa_centre import AfricaCentreSource
+from whereabout.sources.venues.hackney_empire import HackneyEmpireSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -64,4 +65,5 @@ ALL_VENUE_SOURCES = [
     GreenNoteSource(),
     CecilSharpHouseSource(),
     AfricaCentreSource(),
+    HackneyEmpireSource(),
 ]

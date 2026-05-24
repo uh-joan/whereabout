@@ -3,6 +3,9 @@ import asyncio
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
+import httpx
+from bs4 import BeautifulSoup
+
 from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
 from whereabout.sources.venues._utils import venue_event_id, load_venue_config
@@ -13,16 +16,24 @@ _BASE = "https://thejazzcafe.com"
 _POSTCODE = _CFG["postcode"]
 _VENUE = _CFG["name"]
 _LONDON_TZ = ZoneInfo("Europe/London")
+_HEADERS = {"User-Agent": "whereabout/1.0 +github.com/uh-joan/whereabout"}
 
 _GENRE_MAP: dict[str, list[str]] = {
+    "jazz-improvised-music": ["jazz"],
+    "soul-rnb": ["soul", "r&b"],
+    "funk-disco": ["funk", "soul"],
+    "african-diaspora": ["afrobeats", "world"],
+    "electronic": ["electronic"],
+    "hip-hop": ["hip-hop"],
+    "reggae-dub": ["reggae"],
+    "latin": ["latin"],
+    "brazilian": ["latin", "world"],
+    "blues-rock-folk": ["blues", "rock", "folk"],
+    # legacy keys kept for safety
     "jazz": ["jazz"],
     "soul": ["soul"],
     "funk": ["funk"],
-    "african-diaspora": ["afrobeats", "soul"],
-    "electronic": ["electronic"],
-    "hip-hop": ["hip-hop"],
     "reggae": ["reggae"],
-    "latin": ["soul"],
     "r-b": ["r&b"],
     "blues": ["blues"],
 }
@@ -31,7 +42,7 @@ _GENRE_MAP: dict[str, list[str]] = {
 def _parse_genres(data_genre: str) -> list[str]:
     genres: set[str] = set()
     for g in data_genre.split("|"):
-        genres.update(_GENRE_MAP.get(g.lower(), []))
+        genres.update(_GENRE_MAP.get(g.lower().strip(), []))
     return list(genres) or ["jazz", "soul", "funk"]
 
 
@@ -40,7 +51,6 @@ def _parse_date(el, query_start: datetime) -> datetime:
     if not date_el:
         raise ValueError("no .event-date")
     parts = date_el.get_text(separator=" ").split()
-    # parts: ['Fri', '22', 'May'] — day-of-week, day-number, month-abbrev
     year = datetime.now(_LONDON_TZ).year
     naive = datetime.strptime(f"{parts[1]} {parts[2]} {year}", "%d %b %Y")
     local = naive.replace(hour=20, tzinfo=_LONDON_TZ)
@@ -51,35 +61,19 @@ def _parse_date(el, query_start: datetime) -> datetime:
 
 class JazzCafeSource(BaseSource):
     source_id = "venue_jazz_cafe"
-    live = False
+    freshness_seconds = 2 * 3600
 
     async def fetch(self, query: Query) -> list[RawEvent]:
         return await asyncio.to_thread(self._fetch_sync, query)
 
     def _fetch_sync(self, query: Query) -> list[RawEvent]:
         try:
-            from cloakbrowser import launch
-            from bs4 import BeautifulSoup
-        except ImportError:
-            return []
-        browser = None
-        try:
-            browser = launch(headless=True)
-            page = browser.new_page()
-            page.goto(_URL, timeout=30000)
-            page.wait_for_selector("li.event", timeout=15000)
-            html = page.content()
+            r = httpx.get(_URL, headers=_HEADERS, timeout=15, follow_redirects=True)
+            r.raise_for_status()
         except Exception:
             return []
-        finally:
-            if browser:
-                try:
-                    browser.close()
-                except Exception:
-                    pass
 
-        from bs4 import BeautifulSoup
-        soup = BeautifulSoup(html, "html.parser")
+        soup = BeautifulSoup(r.text, "html.parser")
         events: list[RawEvent] = []
 
         for el in soup.select("li.event"):
