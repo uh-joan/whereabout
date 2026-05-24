@@ -5,7 +5,9 @@
     "postcode": "E8 4AE",
     "url": "https://brilliantcornerslondon.co.uk/dates/",
     "default_time": "20:00",
-    "genres": ["jazz"]
+    "genres": [
+      "jazz"
+    ]
   },
   {
     "source_id": "venue_brixton_jamm",
@@ -13,7 +15,10 @@
     "postcode": "SW9 8JP",
     "url": "https://www.brixtonjamm.org/allevents",
     "default_time": "20:00",
-    "genres": ["electronic", "indie"]
+    "genres": [
+      "electronic",
+      "indie"
+    ]
   },
   {
     "source_id": "venue_cafe_oto",
@@ -21,7 +26,10 @@
     "postcode": "E8 3DL",
     "url": "https://cafeoto.co.uk/events/",
     "default_time": "19:00",
-    "genres": ["experimental", "jazz"]
+    "genres": [
+      "experimental",
+      "jazz"
+    ]
   },
   {
     "source_id": "venue_corsica_studios",
@@ -29,7 +37,9 @@
     "postcode": "SE17 1LB",
     "url": "https://www.corsicastudios.com/events/",
     "default_time": "20:00",
-    "genres": ["electronic"]
+    "genres": [
+      "electronic"
+    ]
   },
   {
     "source_id": "venue_earth_hackney",
@@ -37,7 +47,11 @@
     "postcode": "E8 3BH",
     "url": "https://earthackney.co.uk/events/",
     "default_time": "20:00",
-    "genres": ["electronic", "indie", "world"]
+    "genres": [
+      "electronic",
+      "indie",
+      "world"
+    ]
   },
   {
     "source_id": "venue_electric_brixton",
@@ -45,7 +59,9 @@
     "postcode": "SW2 1RJ",
     "url": "https://www.electricbrixton.uk.com/events",
     "default_time": "20:00",
-    "genres": ["electronic"]
+    "genres": [
+      "electronic"
+    ]
   },
   {
     "source_id": "venue_hootananny",
@@ -61,7 +77,10 @@
     "postcode": "NW1 7PG",
     "url": "https://thejazzcafe.com/whats-on",
     "default_time": "20:00",
-    "genres": ["jazz", "soul"]
+    "genres": [
+      "jazz",
+      "soul"
+    ]
   },
   {
     "source_id": "venue_oslo_hackney",
@@ -69,7 +88,10 @@
     "postcode": "E8 2LX",
     "url": "https://www.oslohackney.com/events/",
     "default_time": "20:00",
-    "genres": ["electronic", "indie"]
+    "genres": [
+      "electronic",
+      "indie"
+    ]
   },
   {
     "source_id": "venue_ronnie_scotts",
@@ -77,7 +99,9 @@
     "postcode": "W1D 4HT",
     "url": "https://www.ronniescotts.co.uk/find-a-show",
     "default_time": "19:30",
-    "genres": ["jazz"]
+    "genres": [
+      "jazz"
+    ]
   },
   {
     "source_id": "venue_606_club",
@@ -85,7 +109,9 @@
     "postcode": "SW10 0QD",
     "url": "https://www.606club.co.uk/events/",
     "default_time": "20:00",
-    "genres": ["jazz"]
+    "genres": [
+      "jazz"
+    ]
   },
   {
     "source_id": "venue_village_underground",
@@ -93,7 +119,10 @@
     "postcode": "EC2A 3PQ",
     "url": "https://villageunderground.co.uk/events/",
     "default_time": "20:00",
-    "genres": ["electronic", "indie"]
+    "genres": [
+      "electronic",
+      "indie"
+    ]
   },
   {
     "source_id": "venue_vortex_jazz",
@@ -101,7 +130,9 @@
     "postcode": "N16 8JH",
     "url": "https://vortexjazz.co.uk/events/",
     "default_time": "19:30",
-    "genres": ["jazz"]
+    "genres": [
+      "jazz"
+    ]
   },
   {
     "source_id": "venue_phonox",
@@ -109,7 +140,11 @@
     "postcode": "SW9 8LQ",
     "url": "https://phonox.co.uk/whats-on/",
     "default_time": "22:00",
-    "genres": ["electronic", "house", "techno"]
+    "genres": [
+      "electronic",
+      "house",
+      "techno"
+    ]
   },
   {
     "source_id": "venue_scala",
@@ -117,7 +152,11 @@
     "postcode": "N1 9NL",
     "url": "https://www.scala.co.uk/events/",
     "default_time": "19:00",
-    "genres": ["indie", "electronic", "rock"]
+    "genres": [
+      "indie",
+      "electronic",
+      "rock"
+    ]
   },
   {
     "source_id": "venue_lexington",
@@ -125,7 +164,11 @@
     "postcode": "N1 9QT",
     "url": "https://thelexington.co.uk/events.php",
     "default_time": "19:30",
-    "genres": ["indie", "rock", "alternative"]
+    "genres": [
+      "indie",
+      "rock",
+      "alternative"
+    ]
   },
   {
     "source_id": "venue_rich_mix",
@@ -133,7 +176,12 @@
     "postcode": "E1 6LA",
     "url": "https://richmix.org.uk/whats-on/",
     "default_time": "19:00",
-    "genres": ["world", "jazz", "experimental", "electronic"]
+    "genres": [
+      "world",
+      "jazz",
+      "experimental",
+      "electronic"
+    ]
   },
   {
     "source_id": "venue_dingwalls",
@@ -141,7 +189,11 @@
     "postcode": "NW1 7TL",
     "url": "https://dingwalls.com/",
     "default_time": "19:30",
-    "genres": ["rock", "indie", "pop"]
+    "genres": [
+      "rock",
+      "indie",
+      "pop"
+    ]
   },
   {
     "source_id": "venue_xoyo",
@@ -149,7 +201,12 @@
     "postcode": "EC1R 4QD",
     "url": "https://www.xoyo.co.uk/whats-on",
     "default_time": "22:00",
-    "genres": ["electronic", "house", "techno", "drum-and-bass"]
+    "genres": [
+      "electronic",
+      "house",
+      "techno",
+      "drum-and-bass"
+    ]
   },
   {
     "source_id": "venue_lso_st_lukes",
@@ -157,7 +214,9 @@
     "postcode": "EC1V 8DS",
     "url": "https://www.lso.co.uk/whats-on/",
     "default_time": "19:00",
-    "genres": ["classical"]
+    "genres": [
+      "classical"
+    ]
   },
   {
     "source_id": "venue_wigmore_hall",
@@ -165,7 +224,10 @@
     "postcode": "W1U 2BP",
     "url": "https://wigmore-hall.org.uk/whats-on/",
     "default_time": "19:30",
-    "genres": ["classical", "chamber"]
+    "genres": [
+      "classical",
+      "chamber"
+    ]
   },
   {
     "source_id": "venue_amersham_arms",
@@ -173,7 +235,12 @@
     "postcode": "SE14 6TH",
     "url": "https://www.amershamarms.co.uk/events/",
     "default_time": "20:00",
-    "genres": ["indie", "rock", "alternative", "electronic"]
+    "genres": [
+      "indie",
+      "rock",
+      "alternative",
+      "electronic"
+    ]
   },
   {
     "source_id": "venue_paper_dress",
@@ -181,7 +248,11 @@
     "postcode": "E8 3DU",
     "url": "https://www.paperdressvintage.co.uk/by-night",
     "default_time": "20:00",
-    "genres": ["indie", "electronic", "alternative"]
+    "genres": [
+      "indie",
+      "electronic",
+      "alternative"
+    ]
   },
   {
     "source_id": "venue_dalston_superstore",
@@ -189,7 +260,11 @@
     "postcode": "E8 2LH",
     "url": "https://dalstonsuperstore.com/events/",
     "default_time": "22:00",
-    "genres": ["electronic", "queer", "house"]
+    "genres": [
+      "electronic",
+      "queer",
+      "house"
+    ]
   },
   {
     "source_id": "venue_the_social",
@@ -197,7 +272,12 @@
     "postcode": "W1W 8AX",
     "url": "https://www.thesocial.com/events/",
     "default_time": "19:00",
-    "genres": ["indie", "electronic", "alternative", "experimental"]
+    "genres": [
+      "indie",
+      "electronic",
+      "alternative",
+      "experimental"
+    ]
   },
   {
     "source_id": "venue_clapham_grand",
@@ -205,7 +285,12 @@
     "postcode": "SW11 1TT",
     "url": "https://claphamgrand.com/",
     "default_time": "19:30",
-    "genres": ["pop", "rock", "indie", "comedy"]
+    "genres": [
+      "pop",
+      "rock",
+      "indie",
+      "comedy"
+    ]
   },
   {
     "source_id": "venue_roundhouse",
@@ -213,7 +298,12 @@
     "postcode": "NW1 8EH",
     "url": "https://www.roundhouse.org.uk/whats-on/",
     "default_time": "19:30",
-    "genres": ["rock", "pop", "electronic", "indie"]
+    "genres": [
+      "rock",
+      "pop",
+      "electronic",
+      "indie"
+    ]
   },
   {
     "source_id": "venue_cadogan_hall",
@@ -221,7 +311,11 @@
     "postcode": "SW1X 9DQ",
     "url": "https://www.cadoganhall.com/whats-on/",
     "default_time": "19:30",
-    "genres": ["classical", "jazz", "world"]
+    "genres": [
+      "classical",
+      "jazz",
+      "world"
+    ]
   },
   {
     "source_id": "venue_alexandra_palace",
@@ -229,6 +323,52 @@
     "postcode": "N22 7AY",
     "url": "https://www.alexandrapalace.com/whats-on/",
     "default_time": "19:30",
-    "genres": ["pop", "rock", "electronic", "indie"]
+    "genres": [
+      "pop",
+      "rock",
+      "electronic",
+      "indie"
+    ]
+  },
+  {
+    "source_id": "venue_green_note",
+    "name": "Green Note",
+    "postcode": "NW1 8AH",
+    "url": "https://www.greennote.co.uk/events-page/",
+    "default_time": "19:30",
+    "genres": [
+      "folk",
+      "acoustic",
+      "world",
+      "blues",
+      "singer-songwriter"
+    ]
+  },
+  {
+    "source_id": "venue_cecil_sharp_house",
+    "name": "Cecil Sharp House",
+    "postcode": "NW1 7AY",
+    "url": "https://www.efdss.org/whats-on",
+    "default_time": "19:30",
+    "genres": [
+      "folk",
+      "traditional",
+      "world",
+      "dance"
+    ]
+  },
+  {
+    "source_id": "venue_africa_centre",
+    "name": "Africa Centre",
+    "postcode": "SE1 0SW",
+    "url": "https://www.africacentre.org.uk/events",
+    "default_time": "19:00",
+    "genres": [
+      "world",
+      "afrobeat",
+      "soul",
+      "jazz",
+      "african"
+    ]
   }
 ]

@@ -27,6 +27,9 @@ from whereabout.sources.venues.clapham_grand import ClaphamGrandSource
 from whereabout.sources.venues.roundhouse import RoundhouseSource
 from whereabout.sources.venues.cadogan_hall import CadoganHallSource
 from whereabout.sources.venues.alexandra_palace import AlexandraPalaceSource
+from whereabout.sources.venues.green_note import GreenNoteSource
+from whereabout.sources.venues.cecil_sharp_house import CecilSharpHouseSource
+from whereabout.sources.venues.africa_centre import AfricaCentreSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -58,4 +61,7 @@ ALL_VENUE_SOURCES = [
     RoundhouseSource(),
     CadoganHallSource(),
     AlexandraPalaceSource(),
+    GreenNoteSource(),
+    CecilSharpHouseSource(),
+    AfricaCentreSource(),
 ]
