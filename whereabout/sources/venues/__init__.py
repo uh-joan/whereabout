@@ -21,6 +21,9 @@ from whereabout.sources.venues.lso_st_lukes import LsoStLukesSource
 from whereabout.sources.venues.wigmore_hall import WigmoreHallSource
 from whereabout.sources.venues.amersham_arms import AmershamArmsSource
 from whereabout.sources.venues.paper_dress import PaperDressSource
+from whereabout.sources.venues.dalston_superstore import DalstonSuperstoreSource
+from whereabout.sources.venues.the_social import TheSocialSource
+from whereabout.sources.venues.clapham_grand import ClaphamGrandSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -46,4 +49,7 @@ ALL_VENUE_SOURCES = [
     WigmoreHallSource(),
     AmershamArmsSource(),
     PaperDressSource(),
+    DalstonSuperstoreSource(),
+    TheSocialSource(),
+    ClaphamGrandSource(),
 ]

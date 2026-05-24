@@ -182,5 +182,29 @@
     "url": "https://www.paperdressvintage.co.uk/by-night",
     "default_time": "20:00",
     "genres": ["indie", "electronic", "alternative"]
+  },
+  {
+    "source_id": "venue_dalston_superstore",
+    "name": "Dalston Superstore",
+    "postcode": "E8 2LH",
+    "url": "https://dalstonsuperstore.com/events/",
+    "default_time": "22:00",
+    "genres": ["electronic", "queer", "house"]
+  },
+  {
+    "source_id": "venue_the_social",
+    "name": "The Social",
+    "postcode": "W1W 8AX",
+    "url": "https://www.thesocial.com/events/",
+    "default_time": "19:00",
+    "genres": ["indie", "electronic", "alternative", "experimental"]
+  },
+  {
+    "source_id": "venue_clapham_grand",
+    "name": "Clapham Grand",
+    "postcode": "SW11 1TT",
+    "url": "https://claphamgrand.com/",
+    "default_time": "19:30",
+    "genres": ["pop", "rock", "indie", "comedy"]
   }
 ]
