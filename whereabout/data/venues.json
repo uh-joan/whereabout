@@ -412,5 +412,13 @@
     "url": "https://www.boisdale.co.uk/restaurant/canary-wharf",
     "default_time": "20:00",
     "genres": ["jazz", "soul", "r&b", "blues"]
+  },
+  {
+    "source_id": "venue_underworld_camden",
+    "name": "The Underworld Camden",
+    "postcode": "NW1 8AH",
+    "url": "https://www.theunderworldcamden.co.uk/",
+    "default_time": "19:00",
+    "genres": ["metal", "punk", "rock", "alternative", "indie"]
   }
 ]
