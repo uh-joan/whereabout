@@ -1,5 +1,33 @@
 [
   {
+    "source_id": "venue_grow_hackney",
+    "name": "Grow Hackney",
+    "postcode": "E3 2PA",
+    "url": "https://growhackney.co.uk/events/",
+    "default_time": "20:00",
+    "genres": [
+      "electronic",
+      "house",
+      "disco",
+      "world",
+      "soul"
+    ]
+  },
+  {
+    "source_id": "venue_barbican",
+    "name": "Barbican Centre",
+    "postcode": "EC2Y 8DS",
+    "url": "https://www.barbican.org.uk/whats-on/classical-music",
+    "default_time": "19:30",
+    "genres": [
+      "classical",
+      "contemporary",
+      "orchestral",
+      "opera",
+      "experimental"
+    ]
+  },
+  {
     "source_id": "venue_windmill_brixton",
     "name": "The Windmill Brixton",
     "postcode": "SW2 5BZ",
