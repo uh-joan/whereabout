@@ -14,7 +14,7 @@
 
 # Whereabot
 
-Hyper-local live music discovery for London. Ask in plain English; get neighbourhood-precise gig listings pulled live from DICE, Resident Advisor, Songkick, and 13+ venue websites.
+Hyper-local live music discovery for London. Ask in plain English; get neighbourhood-precise gig listings pulled live from DICE, Resident Advisor, Songkick, and 38 venue websites.
 
 ```
 whereabout session              # interactive TUI (recommended)
@@ -28,11 +28,6 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 uv tool install whereabout
-```
-
-For venues that require a browser scraper (CloakBrowser-backed sources):
-```bash
-playwright install chromium
 ```
 
 ## Setup
@@ -100,15 +95,7 @@ whereabout detail <event_id>
 ```bash
 whereabout config get home_neighbourhood
 whereabout config set home_neighbourhood Dalston
-whereabout config list-neighbourhoods   # 49 supported neighbourhoods
-```
-
-### Scheduled scraping (CloakBrowser-backed venues)
-
-```bash
-whereabout schedule install    # install cron job for browser-scraped venues
-whereabout schedule status
-whereabout schedule uninstall
+whereabout config list-neighbourhoods   # 52 supported neighbourhoods
 ```
 
 ## Sources
@@ -120,25 +107,50 @@ Events are fetched from multiple sources and merged into a local SQLite knowledg
 | DICE FM | Live JSON API | Major London venues |
 | Resident Advisor | Live scraper | Electronic / club nights |
 | Songkick | Live scraper | 2000+ London metro events |
+| Africa Centre | Venue scraper | London Bridge |
+| Alexandra Palace | Venue scraper | Wood Green |
+| Amersham Arms | Venue scraper | New Cross |
+| Boisdale of Canary Wharf | Venue scraper | Canary Wharf |
 | Brilliant Corners | Venue scraper | Dalston |
 | Brixton Jamm | Venue scraper | Brixton |
-| Hootananny | Venue scraper | Brixton |
-| Electric Brixton | Venue scraper | Brixton |
-| The 606 Club | Venue scraper | Chelsea |
-| Village Underground | Venue scraper | Shoreditch |
-| EartH Hackney | Venue scraper | Hackney |
-| Oslo Hackney | Venue scraper | Dalston |
-| Jazz Cafe | Venue scraper | Camden |
-| Ronnie Scott's | CloakBrowser | Soho |
-| Corsica Studios | Venue scraper | Elephant & Castle |
-| Vortex Jazz | Venue scraper | Stoke Newington |
+| Cadogan Hall | Venue scraper | Chelsea |
 | Cafe OTO | Venue scraper | Dalston |
+| Cecil Sharp House | Venue scraper | Camden |
+| Clapham Grand | Venue scraper | Clapham |
+| Conway Hall | Venue scraper | Holborn |
+| Corsica Studios | Venue scraper | Elephant & Castle |
+| Dalston Superstore | Venue scraper | Dalston |
+| Dingwalls | Venue scraper | Camden |
+| EartH Hackney | Venue scraper | Hackney |
+| Electric Brixton | Venue scraper | Brixton |
+| Green Note | Venue scraper | Camden |
+| Hackney Empire | Venue scraper | Hackney |
+| Hootananny Brixton | Venue scraper | Brixton |
+| Jazz Cafe | Venue scraper | Camden |
+| LSO St Luke's | Venue scraper | Clerkenwell |
+| The Lexington | Venue scraper | Islington |
+| O2 Shepherd's Bush Empire | Venue scraper | Shepherd's Bush |
+| Oslo Hackney | Venue scraper | Dalston |
+| Paper Dress Vintage | Venue scraper | Dalston |
+| Phonox | Venue scraper | Brixton |
+| Rich Mix | Venue scraper | Bethnal Green |
+| Ronnie Scott's | Venue scraper | Soho |
+| Roundhouse | Venue scraper | Camden |
+| Scala | Venue scraper | King's Cross |
+| The 606 Club | Venue scraper | Chelsea |
+| The Social | Venue scraper | Soho |
+| St Martin-in-the-Fields | Venue scraper | Covent Garden |
+| The Underworld Camden | Venue scraper | Camden |
+| Village Underground | Venue scraper | Shoreditch |
+| Vortex Jazz Club | Venue scraper | Stoke Newington |
+| Wigmore Hall | Venue scraper | Marylebone |
+| XOYO | Venue scraper | Clerkenwell |
 
-Sources are refreshed when stale (6-hour cache). Browser-scraped sources run on a cron schedule.
+Sources are refreshed when stale (2–6 hour cache per source).
 
 ## Neighbourhoods
 
-49 London neighbourhoods supported, resolved from postcode prefixes and aliases. Includes colloquial names — "stokey" resolves to Stoke Newington, "angel" to Islington, etc.
+52 London neighbourhoods supported, resolved from postcode prefixes and aliases. Includes colloquial names — "stokey" resolves to Stoke Newington, "angel" to Islington, etc.
 
 ```bash
 whereabout config list-neighbourhoods
@@ -153,7 +165,7 @@ whereabout config list-neighbourhoods
 | `query/enrich.py` | Artist bios via Claude, cached 30 days |
 | `kb/ingest.py` | Upserts events into SQLite (multi-source, deduplication) |
 | `kb/read.py` | Reads events from KB by date range |
-| `sources/` | Per-source scrapers (DICE, RA, Songkick, 13 venue scrapers) |
+| `sources/` | Per-source scrapers (DICE, RA, Songkick, 38 venue scrapers) |
 | `neighbourhoods.py` | Postcode-prefix → neighbourhood resolver, nearby fallback |
 | `tui/app.py` | Textual TUI (search, genre filter, festival toggle, detail view) |
 | `doctor.py` | Health checks |
