@@ -540,5 +540,75 @@
       "alternative",
       "soul"
     ]
+  },
+  {
+    "source_id": "venue_half_moon_putney",
+    "name": "Half Moon Putney",
+    "postcode": "SW15 1ET",
+    "url": "https://www.halfmoon.co.uk/pub-events",
+    "default_time": "19:30",
+    "genres": [
+      "indie",
+      "folk",
+      "singer-songwriter",
+      "rock",
+      "pop"
+    ]
+  },
+  {
+    "source_id": "venue_peckham_levels",
+    "name": "Peckham Levels",
+    "postcode": "SE15 4TG",
+    "url": "https://www.peckhamlevels.org/events",
+    "default_time": "20:00",
+    "genres": [
+      "electronic",
+      "house",
+      "disco",
+      "soul",
+      "indie"
+    ]
+  },
+  {
+    "source_id": "venue_moth_club",
+    "name": "Moth Club",
+    "postcode": "E9 6NU",
+    "url": "https://www.mothclub.co.uk/events/",
+    "default_time": "20:00",
+    "genres": [
+      "indie",
+      "alternative",
+      "electronic",
+      "rock",
+      "punk"
+    ]
+  },
+  {
+    "source_id": "venue_shacklewell_arms",
+    "name": "Shacklewell Arms",
+    "postcode": "E8 2EB",
+    "url": "https://www.shacklewellarms.com/events/",
+    "default_time": "20:00",
+    "genres": [
+      "indie",
+      "rock",
+      "folk",
+      "alternative",
+      "electronic"
+    ]
+  },
+  {
+    "source_id": "venue_harrison",
+    "name": "The Harrison",
+    "postcode": "WC1X 9JF",
+    "url": "https://www.harrisonbar.co.uk/events/",
+    "default_time": "19:30",
+    "genres": [
+      "indie",
+      "folk",
+      "singer-songwriter",
+      "rock",
+      "acoustic"
+    ]
   }
 ]

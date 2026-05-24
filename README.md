@@ -14,7 +14,7 @@
 
 # Whereabot
 
-Hyper-local live music discovery for London. Ask in plain English; get neighbourhood-precise gig listings pulled live from DICE, Resident Advisor, Songkick, and 43 venue websites.
+Hyper-local live music discovery for London. Ask in plain English; get neighbourhood-precise gig listings pulled live from DICE, Resident Advisor, Songkick, and 49 venue websites.
 
 ```
 whereabout session              # interactive TUI (recommended)
@@ -135,7 +135,12 @@ Events are fetched from multiple sources and merged into a local SQLite knowledg
 | LSO St Luke's | Venue scraper | Clerkenwell |
 | The Lexington | Venue scraper | Islington |
 | O2 Shepherd's Bush Empire | Venue scraper | Shepherd's Bush |
+| Half Moon Putney | Venue scraper | Putney |
+| Moth Club | Venue scraper | Hackney Wick |
+| Peckham Levels | Venue scraper | Peckham |
+| Shacklewell Arms | Venue scraper | Dalston |
 | Oslo Hackney | Venue scraper | Dalston |
+| The Harrison | Venue scraper | King's Cross |
 | Paper Dress Vintage | Venue scraper | Dalston |
 | Phonox | Venue scraper | Brixton |
 | Rich Mix | Venue scraper | Bethnal Green |
@@ -170,7 +175,7 @@ whereabout config list-neighbourhoods
 | `query/enrich.py` | Artist bios via Claude, cached 30 days |
 | `kb/ingest.py` | Upserts events into SQLite (multi-source, deduplication) |
 | `kb/read.py` | Reads events from KB by date range |
-| `sources/` | Per-source scrapers (DICE, RA, Songkick, 43 venue scrapers) |
+| `sources/` | Per-source scrapers (DICE, RA, Songkick, 49 venue scrapers) |
 | `neighbourhoods.py` | Postcode-prefix → neighbourhood resolver, nearby fallback |
 | `tui/app.py` | Textual TUI (search, genre filter, festival toggle, detail view) |
 | `doctor.py` | Health checks |

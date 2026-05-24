@@ -1,5 +1,6 @@
 from __future__ import annotations
 import asyncio
+import re
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
@@ -9,23 +10,24 @@ from whereabout.models import RawEvent, Query
 from whereabout.sources.base import BaseSource
 from whereabout.sources.venues._utils import venue_event_id, load_venue_config
 
-_CFG = load_venue_config("venue_oslo_hackney")
+_CFG = load_venue_config("venue_half_moon_putney")
 _URL = _CFG["url"]
 _POSTCODE = _CFG["postcode"]
 _VENUE = _CFG["name"]
-_DEFAULT_HOUR, _DEFAULT_MIN = map(int, _CFG["default_time"].split(":"))
 _LONDON_TZ = ZoneInfo("Europe/London")
 
-_DATE_FORMAT = "%a.%d.%b.%y"
-_SKIP_TEXT = frozenset({"more info", "buy tickets", "tickets"})
+# "May 2nd 2026, 11:00 AM" → strip ordinals → "%B %d %Y, %I:%M %p"
+_ORDINAL_RE = re.compile(r"(\d+)(?:st|nd|rd|th)\b")
+_SKIP_RE = re.compile(r"\bquiz\b|\bkaraoke\b|\bpub\s+quiz\b|\bchess\b|\bfooty\b|\bbingo\b", re.IGNORECASE)
 
 
-def _parse_oslo_date(text: str) -> datetime:
-    return datetime.strptime(text.strip(), _DATE_FORMAT)
+def _parse_date(text: str) -> datetime:
+    clean = _ORDINAL_RE.sub(r"\1", text).strip()
+    return datetime.strptime(clean, "%B %d %Y, %I:%M %p")
 
 
-class OsloHackneySource(BaseSource):
-    source_id = "venue_oslo_hackney"
+class HalfMoonPutneySource(BaseSource):
+    source_id = "venue_half_moon_putney"
     live = False
     freshness_seconds = 6 * 3600
 
@@ -58,34 +60,33 @@ class OsloHackneySource(BaseSource):
         events: list[RawEvent] = []
         seen: set[str] = set()
 
-        for card in soup.select("div.card__inside"):
+        for art in soup.select("article[class*='EventCard']"):
             try:
-                date_el = card.select_one("h6.card__strip-heading")
-                if not date_el:
-                    continue
-                naive = _parse_oslo_date(date_el.get_text(strip=True))
-                local = naive.replace(hour=_DEFAULT_HOUR, minute=_DEFAULT_MIN, tzinfo=_LONDON_TZ)
-                dt_utc = local.astimezone(timezone.utc)
-                if not (query.date_range_start_utc <= dt_utc <= query.date_range_end_utc):
-                    continue
-
-                # Title: first non-empty link whose text isn't a button label
-                title_el = None
-                source_url = _URL
-                for a in card.find_all("a", href=True):
-                    text = a.get_text(strip=True)
-                    if text and text.lower() not in _SKIP_TEXT:
-                        title_el = a
-                        source_url = a["href"]
-                        break
+                title_el = art.select_one("h1")
                 if not title_el:
                     continue
                 title = title_el.get_text(strip=True)
+                if not title or _SKIP_RE.search(title):
+                    continue
+
+                date_el = art.select_one("p[class*=date]")
+                if not date_el:
+                    continue
+                naive = _parse_date(date_el.get_text(strip=True))
+                local = naive.replace(tzinfo=_LONDON_TZ)
+                dt_utc = local.astimezone(timezone.utc)
+
+                if not (query.date_range_start_utc <= dt_utc <= query.date_range_end_utc):
+                    continue
 
                 event_id = venue_event_id(_POSTCODE, dt_utc, title)
                 if event_id in seen:
                     continue
                 seen.add(event_id)
+
+                link_el = art.select_one("a[href]")
+                href = link_el["href"] if link_el else ""
+                source_url = href if href.startswith("http") else _URL
 
                 events.append(RawEvent(
                     source=self.source_id,

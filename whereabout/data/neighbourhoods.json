@@ -893,6 +893,22 @@
     ]
   },
   {
+    "name": "Putney",
+    "borough": "Wandsworth",
+    "postcode_prefixes": [
+      "SW15"
+    ],
+    "lat": 51.4613,
+    "lng": -0.2161,
+    "aliases": [
+      "putney bridge",
+      "east putney"
+    ],
+    "ward_aliases": [
+      "Putney"
+    ]
+  },
+  {
     "name": "Shepherd's Bush",
     "borough": "Hammersmith and Fulham",
     "postcode_prefixes": [

@@ -390,7 +390,7 @@ class SearchScreen(Screen):
         self.query_one("#loading", LoadingIndicator).display = False
 
         table = self.query_one("#results-table", DataTable)
-        table.add_columns("#", "Artists / Title", "Date", "Time", "Venue")
+        table.add_columns("#", "Artists / Title", "Date", "Time", "Venue", "Genre")
         table.display = False
 
         inp = self.query_one("#search-input", Input)
@@ -560,12 +560,14 @@ class SearchScreen(Screen):
         for pos, r in enumerate(display_results):
             festival_prefix = "[F] " if r.get("is_festival") else ""
             artists_str = ", ".join(r["artists"]) if r["artists"] else r["title"]
+            genre_str = "/".join(r["genres"][:2]) if r.get("genres") else ""
             table.add_row(
                 str(pos + 1),
                 f"{festival_prefix}{artists_str}"[:50],
                 r["date_local"],
                 r["time_local"],
-                r["venue"][:35],
+                r["venue"][:30],
+                genre_str[:20],
                 key=str(pos + 1),
             )
         table.display = True

@@ -42,6 +42,11 @@ from whereabout.sources.venues.conway_hall import ConwayHallSource
 from whereabout.sources.venues.boisdale import BoisdaleSource
 from whereabout.sources.venues.underworld_camden import UnderworldCamdenSource
 from whereabout.sources.venues.o2_shepherds_bush_empire import O2ShepherdsBushEmpireSource
+from whereabout.sources.venues.half_moon_putney import HalfMoonPutneySource
+from whereabout.sources.venues.peckham_levels import PeckhamLevelsSource
+from whereabout.sources.venues.moth_club import MothClubSource
+from whereabout.sources.venues.shacklewell_arms import ShacklewellArmsSource
+from whereabout.sources.venues.harrison import HarrisonSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -88,4 +93,9 @@ ALL_VENUE_SOURCES = [
     ElectricBallroomSource(),
     SouthbankCentreSource(),
     EffraSocialSource(),
+    HalfMoonPutneySource(),
+    PeckhamLevelsSource(),
+    MothClubSource(),
+    ShacklewellArmsSource(),
+    HarrisonSource(),
 ]
