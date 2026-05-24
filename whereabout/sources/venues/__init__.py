@@ -2,6 +2,7 @@ from whereabout.sources.venues.windmill_brixton import WindmillBrixtonSource
 from whereabout.sources.venues.grow_hackney import GrowHackneySource
 from whereabout.sources.venues.barbican import BarbicanSource
 from whereabout.sources.venues.electric_ballroom import ElectricBallroomSource
+from whereabout.sources.venues.southbank_centre import SouthbankCentreSource
 from whereabout.sources.venues.brilliant_corners import BrilliantCornersSource
 from whereabout.sources.venues.brixton_jamm import BrixtonJammSource
 from whereabout.sources.venues.hootananny import HootanannySource
@@ -84,4 +85,5 @@ ALL_VENUE_SOURCES = [
     GrowHackneySource(),
     BarbicanSource(),
     ElectricBallroomSource(),
+    SouthbankCentreSource(),
 ]

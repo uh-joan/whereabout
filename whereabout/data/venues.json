@@ -1,5 +1,19 @@
 [
   {
+    "source_id": "venue_southbank_centre",
+    "name": "Southbank Centre",
+    "postcode": "SE1 8XX",
+    "url": "https://www.southbankcentre.co.uk/whats-on/",
+    "default_time": "19:30",
+    "genres": [
+      "classical",
+      "jazz",
+      "world",
+      "contemporary",
+      "folk"
+    ]
+  },
+  {
     "source_id": "venue_electric_ballroom",
     "name": "Electric Ballroom",
     "postcode": "NW1 8QP",
