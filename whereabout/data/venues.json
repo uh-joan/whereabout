@@ -206,5 +206,29 @@
     "url": "https://claphamgrand.com/",
     "default_time": "19:30",
     "genres": ["pop", "rock", "indie", "comedy"]
+  },
+  {
+    "source_id": "venue_roundhouse",
+    "name": "Roundhouse",
+    "postcode": "NW1 8EH",
+    "url": "https://www.roundhouse.org.uk/whats-on/",
+    "default_time": "19:30",
+    "genres": ["rock", "pop", "electronic", "indie"]
+  },
+  {
+    "source_id": "venue_cadogan_hall",
+    "name": "Cadogan Hall",
+    "postcode": "SW1X 9DQ",
+    "url": "https://www.cadoganhall.com/whats-on/",
+    "default_time": "19:30",
+    "genres": ["classical", "jazz", "world"]
+  },
+  {
+    "source_id": "venue_alexandra_palace",
+    "name": "Alexandra Palace",
+    "postcode": "N22 7AY",
+    "url": "https://www.alexandrapalace.com/whats-on/",
+    "default_time": "19:30",
+    "genres": ["pop", "rock", "electronic", "indie"]
   }
 ]

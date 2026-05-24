@@ -24,6 +24,9 @@ from whereabout.sources.venues.paper_dress import PaperDressSource
 from whereabout.sources.venues.dalston_superstore import DalstonSuperstoreSource
 from whereabout.sources.venues.the_social import TheSocialSource
 from whereabout.sources.venues.clapham_grand import ClaphamGrandSource
+from whereabout.sources.venues.roundhouse import RoundhouseSource
+from whereabout.sources.venues.cadogan_hall import CadoganHallSource
+from whereabout.sources.venues.alexandra_palace import AlexandraPalaceSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -52,4 +55,7 @@ ALL_VENUE_SOURCES = [
     DalstonSuperstoreSource(),
     TheSocialSource(),
     ClaphamGrandSource(),
+    RoundhouseSource(),
+    CadoganHallSource(),
+    AlexandraPalaceSource(),
 ]
