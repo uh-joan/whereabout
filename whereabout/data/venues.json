@@ -1,5 +1,19 @@
 [
   {
+    "source_id": "venue_electric_ballroom",
+    "name": "Electric Ballroom",
+    "postcode": "NW1 8QP",
+    "url": "https://www.electricballroom.co.uk/whats-on/",
+    "default_time": "19:00",
+    "genres": [
+      "indie",
+      "rock",
+      "pop",
+      "electronic",
+      "hip-hop"
+    ]
+  },
+  {
     "source_id": "venue_grow_hackney",
     "name": "Grow Hackney",
     "postcode": "E3 2PA",
