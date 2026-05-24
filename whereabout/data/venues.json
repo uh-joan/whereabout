@@ -118,5 +118,29 @@
     "url": "https://www.scala.co.uk/events/",
     "default_time": "19:00",
     "genres": ["indie", "electronic", "rock"]
+  },
+  {
+    "source_id": "venue_lexington",
+    "name": "The Lexington",
+    "postcode": "N1 9QT",
+    "url": "https://thelexington.co.uk/events.php",
+    "default_time": "19:30",
+    "genres": ["indie", "rock", "alternative"]
+  },
+  {
+    "source_id": "venue_rich_mix",
+    "name": "Rich Mix",
+    "postcode": "E1 6LA",
+    "url": "https://richmix.org.uk/whats-on/",
+    "default_time": "19:00",
+    "genres": ["world", "jazz", "experimental", "electronic"]
+  },
+  {
+    "source_id": "venue_dingwalls",
+    "name": "Dingwalls",
+    "postcode": "NW1 7TL",
+    "url": "https://dingwalls.com/",
+    "default_time": "19:30",
+    "genres": ["rock", "indie", "pop"]
   }
 ]
