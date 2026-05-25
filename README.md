@@ -14,7 +14,7 @@
 
 # Whereabot
 
-Hyper-local live music discovery for London. Ask in plain English; get neighbourhood-precise gig listings pulled live from DICE, Resident Advisor, Songkick, and 49 venue websites.
+Hyper-local live music discovery for London. Ask in plain English; get neighbourhood-precise gig listings pulled live from DICE, Resident Advisor, Songkick, and 56 venue websites.
 
 ```
 whereabout session              # interactive TUI (recommended)
@@ -141,6 +141,13 @@ Events are fetched from multiple sources and merged into a local SQLite knowledg
 | Shacklewell Arms | Venue scraper | Dalston |
 | Oslo Hackney | Venue scraper | Dalston |
 | The Harrison | Venue scraper | King's Cross |
+| The Bedford | Venue scraper | Balham |
+| Blues Kitchen Camden | Venue scraper | Camden |
+| Blues Kitchen Shoreditch | Venue scraper | Shoreditch |
+| Blues Kitchen Brixton | Venue scraper | Brixton |
+| Toulouse Lautrec | Venue scraper | Kennington |
+| The Waiting Room | Venue scraper | Stoke Newington |
+| New Cross Inn | Venue scraper | New Cross |
 | Paper Dress Vintage | Venue scraper | Dalston |
 | Phonox | Venue scraper | Brixton |
 | Rich Mix | Venue scraper | Bethnal Green |

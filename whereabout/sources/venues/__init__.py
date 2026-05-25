@@ -47,6 +47,15 @@ from whereabout.sources.venues.peckham_levels import PeckhamLevelsSource
 from whereabout.sources.venues.moth_club import MothClubSource
 from whereabout.sources.venues.shacklewell_arms import ShacklewellArmsSource
 from whereabout.sources.venues.harrison import HarrisonSource
+from whereabout.sources.venues.the_bedford import TheBedfordSource
+from whereabout.sources.venues.blues_kitchen import (
+    BluesKitchenCamdenSource,
+    BluesKitchenShoreditchSource,
+    BluesKitchenBrixtonSource,
+)
+from whereabout.sources.venues.toulouse_lautrec import ToulouseLautrecSource
+from whereabout.sources.venues.waiting_room_n16 import WaitingRoomN16Source
+from whereabout.sources.venues.new_cross_inn import NewCrossInnSource
 
 ALL_VENUE_SOURCES = [
     BrilliantCornersSource(),
@@ -98,4 +107,11 @@ ALL_VENUE_SOURCES = [
     MothClubSource(),
     ShacklewellArmsSource(),
     HarrisonSource(),
+    TheBedfordSource(),
+    BluesKitchenCamdenSource(),
+    BluesKitchenShoreditchSource(),
+    BluesKitchenBrixtonSource(),
+    ToulouseLautrecSource(),
+    WaitingRoomN16Source(),
+    NewCrossInnSource(),
 ]

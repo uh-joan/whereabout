@@ -124,8 +124,9 @@ def refresh(
         from whereabout.sources.venues.shacklewell_arms import ShacklewellArmsSource
         from whereabout.sources.venues.harrison import HarrisonSource
         from whereabout.sources.venues.oslo_hackney import OsloHackneySource
+        from whereabout.sources.venues.the_bedford import TheBedfordSource
 
-        browser_sources = [JazzCafeSource(), RonnieScottsSource(), CorsicaStudiosSource(), HalfMoonPutneySource(), MothClubSource(), ShacklewellArmsSource(), HarrisonSource(), OsloHackneySource()]
+        browser_sources = [JazzCafeSource(), RonnieScottsSource(), CorsicaStudiosSource(), HalfMoonPutneySource(), MothClubSource(), ShacklewellArmsSource(), HarrisonSource(), OsloHackneySource(), TheBedfordSource()]
 
         async def _fetch_browser() -> list:
             results = await asyncio.gather(

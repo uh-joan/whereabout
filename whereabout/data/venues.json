@@ -610,5 +610,100 @@
       "rock",
       "acoustic"
     ]
+  },
+  {
+    "source_id": "venue_the_bedford",
+    "name": "The Bedford",
+    "postcode": "SW12 9HD",
+    "url": "https://thebedford.com/events/category/music/",
+    "default_time": "20:00",
+    "genres": [
+      "indie",
+      "rock",
+      "folk",
+      "singer-songwriter",
+      "pop"
+    ]
+  },
+  {
+    "source_id": "venue_blues_kitchen_camden",
+    "name": "Blues Kitchen Camden",
+    "postcode": "NW1 7JY",
+    "url": "https://www.theblueskitchen.com/camden/whats-on/",
+    "default_time": "20:00",
+    "genres": [
+      "blues",
+      "soul",
+      "r&b",
+      "jazz"
+    ]
+  },
+  {
+    "source_id": "venue_blues_kitchen_shoreditch",
+    "name": "Blues Kitchen Shoreditch",
+    "postcode": "EC2A 3NY",
+    "url": "https://www.theblueskitchen.com/shoreditch/whats-on/",
+    "default_time": "20:00",
+    "genres": [
+      "blues",
+      "soul",
+      "r&b",
+      "electronic"
+    ]
+  },
+  {
+    "source_id": "venue_new_cross_inn",
+    "name": "New Cross Inn",
+    "postcode": "SE14 6AS",
+    "url": "https://www.newcrossinn.com/gigs/",
+    "default_time": "18:00",
+    "genres": [
+      "indie",
+      "punk",
+      "rock",
+      "alternative",
+      "metal"
+    ]
+  },
+  {
+    "source_id": "venue_waiting_room_n16",
+    "name": "The Waiting Room",
+    "postcode": "N16 0LH",
+    "url": "https://thewaitingroomn16.com/",
+    "default_time": "20:00",
+    "genres": [
+      "indie",
+      "folk",
+      "electronic",
+      "experimental",
+      "alternative"
+    ]
+  },
+  {
+    "source_id": "venue_toulouse_lautrec",
+    "name": "Toulouse Lautrec",
+    "postcode": "SE11 4RN",
+    "url": "https://www.toulouselautrec.co.uk/whats-on/",
+    "default_time": "20:00",
+    "genres": [
+      "jazz",
+      "blues",
+      "soul",
+      "latin",
+      "swing"
+    ]
+  },
+  {
+    "source_id": "venue_blues_kitchen_brixton",
+    "name": "Blues Kitchen Brixton",
+    "postcode": "SW9 8LF",
+    "url": "https://www.theblueskitchen.com/brixton/whats-on/",
+    "default_time": "20:00",
+    "genres": [
+      "blues",
+      "soul",
+      "r&b",
+      "neo-soul"
+    ]
   }
 ]
